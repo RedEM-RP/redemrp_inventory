@@ -6,7 +6,7 @@ data = {}
 local inventory = {}
 data = inventory
 
-AddEventHandler('redem_inventory:getData', function(cb)
+AddEventHandler('redemrp_inventory:getData', function(cb)
     cb(data)
 end)
 

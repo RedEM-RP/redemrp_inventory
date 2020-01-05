@@ -1,4 +1,4 @@
-# redem_inventory 1.0v
+# redemrp_inventory 1.0v
 
 ## 1. Requirements
 
@@ -12,7 +12,7 @@
 
 ## 2. Installation
 - Insert the .sql file into your database.
-- Add ```ensure redem_inventory``` in server.cfg
+- Add ```ensure redemrp_inventory``` in server.cfg
 
 ## 3. How to use
 Press [B] to open inventory
@@ -28,7 +28,7 @@ AddEventHandler("RegisterUsableItem:your_item_name", function(source)
     print("test")
 end)
 ```
-- You need also to add usable item in redem_inventory config.lua file (example provided below)
+- You need also to add usable item in redemrp_inventory config.lua file (example provided below)
 
 ```Usable = {"wood", "your_item_name"}```
 
@@ -37,7 +37,7 @@ If you want to delete, add or check item amount you need use an example provided
 
 ```
 data = {}
-TriggerEvent("redem_inventory:getData",function(call)
+TriggerEvent("redemrp_inventory:getData",function(call)
 		data = call
 end)
 ```
