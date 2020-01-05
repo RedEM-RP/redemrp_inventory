@@ -1,6 +1,7 @@
 local ITEMS = {}
-
-
+local active = false
+local PickPrompt
+local wait = 0
 ------------------------- EVENTS -------------------------
 
 
@@ -33,38 +34,75 @@ function DrawText3D(x, y, z, text)
     DrawSprite("generic_textures", "hud_menu_4a", _x, _y+0.0125,0.015+ factor, 0.03, 0.1, 100, 1, 1, 190, 0)
 end
 
+function SetupPickPrompt()
+    Citizen.CreateThread(function()
+        local str = 'Pick up'
+        PickPrompt = PromptRegisterBegin()
+        PromptSetControlAction(PickPrompt, 0xF84FA74F)
+        str = CreateVarString(10, 'LITERAL_STRING', str)
+        PromptSetText(PickPrompt, str)
+        PromptSetEnabled(PickPrompt, false)
+        PromptSetVisible(PickPrompt, false)
+        PromptSetHoldMode(PickPrompt, true)
+        PromptRegisterEnd(PickPrompt)
+
+    end)
+
+end
+
 
 
 Citizen.CreateThread(function()
-    while true do
-        Citizen.Wait(0)
+ SetupPickPrompt()
+        while true do
+            Citizen.Wait(wait)
 
-        local playerPed = PlayerPedId()
-        local coords = GetEntityCoords(playerPed)
+            local playerPed = PlayerPedId()
+            local coords = GetEntityCoords(playerPed)
 
-        -- if there's no nearby Pickups we can wait a bit to save performance
-        if next(Pickups) == nil then
-            Citizen.Wait(500)
-        end
-
-        for k,v in pairs(Pickups) do
-            local distance = GetDistanceBetweenCoords(coords, v.coords.x, v.coords.y, v.coords.z, true)
-
-
-            if distance <= 5.0 then
-                DrawText3D(v.coords.x, v.coords.y, v.coords.z-0.5, v.name.." ".."["..v.amount.."]")
-
+            -- if there's no nearby Pickups we can wait a bit to save performance
+            if next(Pickups) == nil then
+                Citizen.Wait(500)
             end
 
-            if distance <= 1.0 and not v.inRange and IsPedOnFoot(playerPed) then
+            for k,v in pairs(Pickups) do
+                local distance = GetDistanceBetweenCoords(coords, v.coords.x, v.coords.y, v.coords.z, true)
+				
+				if distance >= 15.0 then   
+					wait = 2000	
+					print("chill")
+				else
+					wait = 0
+									
+                end
 
+                if distance <= 5.0 then
+                    DrawText3D(v.coords.x, v.coords.y, v.coords.z-0.5, v.name.." ".."["..v.amount.."]")					
 
-                TriggerServerEvent("item:onpickup",v.obj)
-                TriggerEvent("redemrp_notification:start", "COLLECTED: "..v.name.." ".."["..v.amount.."]", 3, "success")
-                v.inRange = true
+                end
+
+                if distance <= 1.0 and not v.inRange  then
+                    TaskLookAtEntity(playerPed, v.obj , 3000 ,2048 , 3)
+                    if active == false then
+                         PromptSetEnabled(PickPrompt, true)
+						 PromptSetVisible(PickPrompt, true)
+                         active = true
+                    end
+                    if PromptHasHoldModeCompleted(PickPrompt) then
+                        PlaySoundFrontend("CHECKPOINT_PERFECT", "HUD_MINI_GAME_SOUNDSET", true, 1)
+                        TriggerServerEvent("item:onpickup",v.obj)
+                        TriggerEvent("redemrp_notification:start", "COLLECTED: "..v.name.." ".."["..v.amount.."]", 3, "success")
+                        v.inRange = true
+                    end
+                else
+					if active == true then
+						PromptSetEnabled(PickPrompt, false)
+						PromptSetVisible(PickPrompt, false)
+						active = false
+					end
+                end
             end
         end
-    end
 end)
 RegisterNetEvent('item:removePickup')
 AddEventHandler('item:removePickup', function(obj)
@@ -80,6 +118,7 @@ AddEventHandler('item:removePickup', function(obj)
         Wait(100)
     end
     DeleteEntity(obj)
+    FreezeEntityPosition(obj , false)
 end)
 
 RegisterNetEvent('item:pickup')
@@ -99,22 +138,24 @@ AddEventHandler('item:pickup', function(name, amount)
     local obj = CreateObject("P_COTTONBOX01X", x, y, z, true, true, true)
     PlaceObjectOnGroundProperly(obj)
     SetEntityAsMissionEntity(obj, true, false)
+    FreezeEntityPosition(obj , true)
     TriggerServerEvent("item:SharePickupServer",name, obj , amount, x, y, z)
+    PlaySoundFrontend("show_info", "Study_Sounds", true, 0)
 end)
 
 RegisterNetEvent('item:Sharepickup')
 AddEventHandler('item:Sharepickup', function(name, obj , amount, x, y, z , value)
-if value == 1 then
-    Pickups[obj] = {
-        name = name,
-        obj = obj,
-        amount = amount,
-        inRange = false,
-        coords = {x = x, y = y, z = z}
-    }
-	else
-	 Pickups[obj] = nil
-	end
+    if value == 1 then
+        Pickups[obj] = {
+            name = name,
+            obj = obj,
+            amount = amount,
+            inRange = false,
+            coords = {x = x, y = y, z = z}
+        }
+    else
+        Pickups[obj] = nil
+    end
 end)
 
 RegisterCommand('getinv', function(source, args)
@@ -208,32 +249,36 @@ RegisterNUICallback('NUIFocusOff', function()
     SetNuiFocus(false, false)
 end)
 RegisterCommand('test_pl', function(source, args)
-   local players = {}
-   players = GetClosestPlayer()
-   
+    local players = {}
+    players = GetClosestPlayer()
+
     for i=1, #players, 1 do
-		print(players[i])
+        print(players[i])
     end
-   
+
+end)
+
+RegisterNUICallback('sound', function()
+    PlaySoundFrontend("BACK", "RDRO_Character_Creator_Sounds", true, 0)
 end)
 
 RegisterNUICallback('GetNearPlayers', function(data, cb)
     local playerPed = PlayerPedId()
     local players = {}
-   players = GetClosestPlayer()
+    players = GetClosestPlayer()
 
     local foundPlayers = false
     local elements     = {}
 
- for i=1, #players, 1 do
+    for i=1, #players, 1 do
         foundPlayers = true
-		print("znaleziono")
+        print("znaleziono")
         table.insert(elements, {
             label = GetPlayerName(players[i]),
             player = GetPlayerServerId(players[i])
         })
-   
-end
+
+    end
     if not foundPlayers then
         print("nope")
     else
@@ -248,7 +293,7 @@ end
         })
     end
 
-  --  cb("ok")
+    --  cb("ok")
 end)
 
 RegisterNUICallback('UseItem', function(data, cb)
@@ -266,8 +311,8 @@ end)
 RegisterNUICallback('GiveItem', function(data, cb)
     local playerPed = PlayerPedId()
     local players = GetClosestPlayer()
-    
- for i=1, #players, 1 do
+
+    for i=1, #players, 1 do
         if players[i] ~= PlayerId() then
             if GetPlayerServerId(players[i]) == data.player then
                 local name = tostring(data.data.item)
@@ -278,7 +323,7 @@ RegisterNUICallback('GiveItem', function(data, cb)
                 break
             end
         end
-   end
+    end
 end)
 
 function shouldSkipAccount (accountName)
@@ -301,21 +346,21 @@ function loadPlayerInventory()
             for _, u in pairs(Usable) do
                 if k == u then
                     use = true
-                   break
+                    break
                 end
             end
-                table.insert(test, value,{
-                    label     = k,
-                    type      = 'item_standard',
-                    count     = v,
-                    name     = k,
-                    usable    = use,
-                    rare      = false,
-                    limit      = 64,
-                    canRemove = true
-                })
-                value = value + 1
-            
+            table.insert(test, value,{
+                label     = k,
+                type      = 'item_standard',
+                count     = v,
+                name     = k,
+                usable    = use,
+                rare      = false,
+                limit      = 64,
+                canRemove = true
+            })
+            value = value + 1
+
         end
     end
 
