@@ -11,51 +11,24 @@
 [redemrp_notification](https://github.com/Ktos93/redemrp_notification/)
 
 ## 2. Installation
-First of all you need to insert the .sql file into your database.
+- Insert the .sql file into your database.
+- Add ```ensure redem_inventory``` in server.cfg
 
-Add ```ensure redem_inventory``` in server.cfg
+## 3. How to use
+Press [E] to open inventory
 
-## 3. How to start
-You can use:
+- /getinv - to reload inventory(dev)
+- /giveitem name count - to give yourself an item
 
-/getinv -to load inventory
-
-/giveitem -to add item (name amount)
-
-press [E] to open inventory
-## 4. Auto load inventory
-put code to redemrp_respawn line 90 CLIENT
-
-looks before (90)
-
-```
-	NetworkSetFriendlyFireOption(true)
-	TriggerEvent("redemrp_respawn:camera", coords)
-	if new_character == 1 then
-	TriggerEvent("redemrp_skin:openCreator")
-	print("new character")...........
-```
- looks if we add auto load  (90) CLIENT
-```
-	NetworkSetFriendlyFireOption(true)
-	TriggerEvent("redemrp_respawn:camera", coords)
-	TriggerServerEvent("player:getItems", source)
-	if new_character == 1 then
-	TriggerEvent("redemrp_skin:openCreator")
-	print("new character")..............
-```
-we add this
-
-```TriggerServerEvent("player:getItems", source)```
-
-If you want register usable item then then you need add to your SERVER script this and replace wood on something else
+## 4. Usable Items
+- To Register a usable item, use an example provided below (server-side)
 ```
 RegisterServerEvent("RegisterUsableItem:wood")
 AddEventHandler("RegisterUsableItem:wood", function()
     print("test")
 end)
 ```
-next you need add in redem_inventory config item name 
+- You need also to add usable item in redem_inventory (example provided below)
 
 ```Usable = {"wood", "your_item_name"}```
 
