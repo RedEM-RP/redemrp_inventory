@@ -21,7 +21,7 @@ Press [B] to open inventory
 - /giveitem name count - to give yourself an item
 
 ## 4. Usable Items
-- To Register a usable item, use an example provided below (server-side)
+- To Register usable item, use an example provided below (server-side)
 ```
 RegisterServerEvent("RegisterUsableItem:your_item_name")
 AddEventHandler("RegisterUsableItem:your_item_name", function(source)
@@ -53,7 +53,7 @@ TO DO :
 
 ![alt text](https://i.imgur.com/PxCRpBv.png)
 
-## 5. Credits
+## 6. Credits
 [Ktos93](http://github.com/Ktos93)
 
 [z00t](https://github.com/z00t) - Thanks for huge help
