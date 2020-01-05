@@ -23,17 +23,17 @@ Press [E] to open inventory
 ## 4. Usable Items
 - To Register a usable item, use an example provided below (server-side)
 ```
-RegisterServerEvent("RegisterUsableItem:wood")
-AddEventHandler("RegisterUsableItem:wood", function()
+RegisterServerEvent("RegisterUsableItem:your_item_name")
+AddEventHandler("RegisterUsableItem:your_item_name", function()
     print("test")
 end)
 ```
-- You need also to add usable item in redem_inventory (example provided below)
+- You need also to add usable item in redem_inventory config.lua file (example provided below)
 
 ```Usable = {"wood", "your_item_name"}```
 
-
-If you want delete , add or check item amount then you need add to your SERVER script this
+## 5. Developing
+If you want to delete, add or check item amount you need use an example provided below (server-side)
 
 ```
 data = {}
