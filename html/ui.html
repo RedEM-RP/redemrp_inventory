@@ -23,6 +23,7 @@
 
 
   <script type="text/javascript">
+	var show22 = false;
     var imported = document.createElement("script");
     imported.src = "locales/" + Config.locale + ".js";
     document.head.appendChild(imported);
@@ -141,6 +142,7 @@
 
     function closeInventory() {
       $.post("http://redemrp_inventory/NUIFocusOff", JSON.stringify({}));
+	  show22 = false;
     }
 
     function inventorySetup(items) {
@@ -189,7 +191,31 @@
           });
         }
       });
+	   show22 = true;
+	  initDivMouseOver()
     }
+		window.onload = initDivMouseOver;		
+function initDivMouseOver()   {
+	if (show22 === true) {
+   var div = document.getElementById("inventoryElement");
+   div.mouseIsOver = false;
+   div.onmouseover = function()   {
+      this.mouseIsOver = true;
+		$.post("http://redemrp_inventory/sound");
+   };
+   div.onmouseout = function()   {
+      this.mouseIsOver = false;
+	 
+	   
+   }
+   div.onclick = function()   {
+      if (this.mouseIsOver)   {
+	  
+        
+      }
+   }
+}
+}
   </script>
 </body>
 
