@@ -15,7 +15,7 @@
 - Add ```ensure redem_inventory``` in server.cfg
 
 ## 3. How to use
-Press [E] to open inventory
+Press [B] to open inventory
 
 - /getinv - to reload inventory(dev)
 - /giveitem name count - to give yourself an item
@@ -24,7 +24,7 @@ Press [E] to open inventory
 - To Register a usable item, use an example provided below (server-side)
 ```
 RegisterServerEvent("RegisterUsableItem:your_item_name")
-AddEventHandler("RegisterUsableItem:your_item_name", function()
+AddEventHandler("RegisterUsableItem:your_item_name", function(source)
     print("test")
 end)
 ```
