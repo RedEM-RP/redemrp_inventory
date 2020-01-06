@@ -61,11 +61,11 @@ Citizen.CreateThread(function()
             local coords = GetEntityCoords(playerPed)
 
             -- if there's no nearby Pickups we can wait a bit to save performance
-            if next(Pickups) == nil then
+            if next(Config.Pickups) == nil then
                 Citizen.Wait(500)
             end
 
-            for k,v in pairs(Pickups) do
+            for k,v in pairs(Config.Pickups) do
                 local distance = GetDistanceBetweenCoords(coords, v.coords.x, v.coords.y, v.coords.z, true)
 				
 				if distance >= 15.0 then   
@@ -146,7 +146,7 @@ end)
 RegisterNetEvent('item:Sharepickup')
 AddEventHandler('item:Sharepickup', function(name, obj , amount, x, y, z , value)
     if value == 1 then
-        Pickups[obj] = {
+        Config.Pickups[obj] = {
             name = name,
             obj = obj,
             amount = amount,
@@ -154,7 +154,7 @@ AddEventHandler('item:Sharepickup', function(name, obj , amount, x, y, z , value
             coords = {x = x, y = y, z = z}
         }
     else
-        Pickups[obj] = nil
+        Config.Pickups[obj] = nil
     end
 end)
 
@@ -343,14 +343,18 @@ function loadPlayerInventory()
     for k, v in pairs(ITEMS) do
         local use = false
         if tonumber(v) > 0 then
-            for _, u in pairs(Usable) do
+            for _, u in pairs(Config.Usable) do
                 if k == u then
                     use = true
                     break
                 end
             end
+			local cK = k
+			if Config.Labels[k] ~= nil then
+				cK = Config.Labels[k]
+			end		
             table.insert(test, value,{
-                label     = k,
+                label     = cK,
                 type      = 'item_standard',
                 count     = v,
                 name     = k,
