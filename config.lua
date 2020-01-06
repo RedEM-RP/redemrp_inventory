@@ -1,5 +1,9 @@
-Usable = {"wood"}
+Config = {}
 
-Pickups = {}
+Config.Usable = {"wood"}
 
-Pickups2 = {}
+Config.Labels = {["wood"] = "Wood Logs",}
+
+Config.Pickups = {}
+
+Config.Pickups2 = {}
