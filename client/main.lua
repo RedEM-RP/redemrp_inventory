@@ -61,11 +61,11 @@ Citizen.CreateThread(function()
             local coords = GetEntityCoords(playerPed)
 
             -- if there's no nearby Pickups we can wait a bit to save performance
-            if next(Config.Pickups) == nil then
+            if next(Pickups) == nil then
                 Citizen.Wait(500)
             end
 
-            for k,v in pairs(Config.Pickups) do
+            for k,v in pairs(Pickups) do
                 local distance = GetDistanceBetweenCoords(coords, v.coords.x, v.coords.y, v.coords.z, true)
 				
 				if distance >= 15.0 then   
@@ -146,7 +146,7 @@ end)
 RegisterNetEvent('item:Sharepickup')
 AddEventHandler('item:Sharepickup', function(name, obj , amount, x, y, z , value)
     if value == 1 then
-        Config.Pickups[obj] = {
+        Pickups[obj] = {
             name = name,
             obj = obj,
             amount = amount,
@@ -154,7 +154,7 @@ AddEventHandler('item:Sharepickup', function(name, obj , amount, x, y, z , value
             coords = {x = x, y = y, z = z}
         }
     else
-        Config.Pickups[obj] = nil
+        Pickups[obj] = nil
     end
 end)
 
