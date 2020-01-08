@@ -96,7 +96,7 @@
       });
     }
 
-    function dropGetHowMany(item, type) {
+    function dropGetHowMany(item, type, hash) {
       if (type != "item_weapon") {
         dialog.prompt({
           title: "Amount",
@@ -114,11 +114,11 @@
         });
       }
       else {
-        $.post("http://redemrp_inventory/DropItem", JSON.stringify({ item: item, type: type, number: 0 }));
+        $.post("http://redemrp_inventory/DropItem", JSON.stringify({ item: item, type: type, hash: hash}));
       }
     }
 
-    function giveGetHowMany(item, type) {
+    function giveGetHowMany(item, type ,hash) {
       if (type != "item_weapon") {
         dialog.prompt({
           title: "Amount",
@@ -136,7 +136,7 @@
         });
       }
       else {
-        $.post("http://redemrp_inventory/GetNearPlayers", JSON.stringify({ type: type, what: "give", item: item, count: 1 }));
+        $.post("http://redemrp_inventory/GetNearPlayers", JSON.stringify({ type: type, what: "give", item: item, hash: hash }));
       }
     }
 
@@ -179,7 +179,7 @@
           data.push({
             text: "Drop",
             action: function () {
-              dropGetHowMany(item.name, item.type);
+              dropGetHowMany(item.name, item.type , item.hash);
             }
           });
         }

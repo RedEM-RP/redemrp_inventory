@@ -53,56 +53,56 @@ end
 
 
 Citizen.CreateThread(function()
- SetupPickPrompt()
-        while true do
-            Citizen.Wait(wait)
+    SetupPickPrompt()
+    while true do
+        Citizen.Wait(wait)
 
-            local playerPed = PlayerPedId()
-            local coords = GetEntityCoords(playerPed)
+        local playerPed = PlayerPedId()
+        local coords = GetEntityCoords(playerPed)
 
-            -- if there's no nearby Pickups we can wait a bit to save performance
-            if next(Pickups) == nil then
-                Citizen.Wait(500)
+        -- if there's no nearby Pickups we can wait a bit to save performance
+        if next(Pickups) == nil then
+            Citizen.Wait(500)
+        end
+
+        for k,v in pairs(Pickups) do
+            local distance = GetDistanceBetweenCoords(coords, v.coords.x, v.coords.y, v.coords.z, true)
+
+            if distance >= 15.0 then
+                wait = 2000
+                print("chill")
+            else
+                wait = 0
+
             end
 
-            for k,v in pairs(Pickups) do
-                local distance = GetDistanceBetweenCoords(coords, v.coords.x, v.coords.y, v.coords.z, true)
-				
-				if distance >= 15.0 then   
-					wait = 2000	
-					print("chill")
-				else
-					wait = 0
-									
+            if distance <= 5.0 then
+                DrawText3D(v.coords.x, v.coords.y, v.coords.z-0.5, v.name.." ".."["..v.amount.."]")
+
+            end
+
+            if distance <= 0.7 and not v.inRange  then
+                TaskLookAtEntity(playerPed, v.obj , 3000 ,2048 , 3)
+                if active == false then
+                    PromptSetEnabled(PickPrompt, true)
+                    PromptSetVisible(PickPrompt, true)
+                    active = true
                 end
-
-                if distance <= 5.0 then
-                    DrawText3D(v.coords.x, v.coords.y, v.coords.z-0.5, v.name.." ".."["..v.amount.."]")					
-
+                if PromptHasHoldModeCompleted(PickPrompt) then
+                    PlaySoundFrontend("CHECKPOINT_PERFECT", "HUD_MINI_GAME_SOUNDSET", true, 1)
+                    TriggerServerEvent("item:onpickup",v.obj)
+                    TriggerEvent("redemrp_notification:start", "COLLECTED: "..v.name.." ".."["..v.amount.."]", 3, "success")
+                    v.inRange = true
                 end
-
-                if distance <= 1.0 and not v.inRange  then
-                    TaskLookAtEntity(playerPed, v.obj , 3000 ,2048 , 3)
-                    if active == false then
-                         PromptSetEnabled(PickPrompt, true)
-						 PromptSetVisible(PickPrompt, true)
-                         active = true
-                    end
-                    if PromptHasHoldModeCompleted(PickPrompt) then
-                        PlaySoundFrontend("CHECKPOINT_PERFECT", "HUD_MINI_GAME_SOUNDSET", true, 1)
-                        TriggerServerEvent("item:onpickup",v.obj)
-                        TriggerEvent("redemrp_notification:start", "COLLECTED: "..v.name.." ".."["..v.amount.."]", 3, "success")
-                        v.inRange = true
-                    end
-                else
-					if active == true then
-						PromptSetEnabled(PickPrompt, false)
-						PromptSetVisible(PickPrompt, false)
-						active = false
-					end
+            else
+                if active == true then
+                    PromptSetEnabled(PickPrompt, false)
+                    PromptSetVisible(PickPrompt, false)
+                    active = false
                 end
             end
         end
+    end
 end)
 RegisterNetEvent('item:removePickup')
 AddEventHandler('item:removePickup', function(obj)
@@ -122,13 +122,15 @@ AddEventHandler('item:removePickup', function(obj)
 end)
 
 RegisterNetEvent('item:pickup')
-AddEventHandler('item:pickup', function(name, amount)
+AddEventHandler('item:pickup', function(name, amount , hash)
     local ped     = PlayerPedId()
+    local _hash = tonumber(hash)
     local coords  = GetEntityCoords(ped)
     local forward = GetEntityForwardVector(ped)
     local x, y, z = table.unpack(coords + forward * 1.6)
     print(x)
     print(y)
+    print(_hash)
     if not HasModelLoaded("P_COTTONBOX01X") then
         RequestModel("P_COTTONBOX01X")
     end
@@ -139,17 +141,19 @@ AddEventHandler('item:pickup', function(name, amount)
     PlaceObjectOnGroundProperly(obj)
     SetEntityAsMissionEntity(obj, true, false)
     FreezeEntityPosition(obj , true)
-    TriggerServerEvent("item:SharePickupServer",name, obj , amount, x, y, z)
+    TriggerServerEvent("item:SharePickupServer",name, obj , amount, x, y, z , _hash)
     PlaySoundFrontend("show_info", "Study_Sounds", true, 0)
 end)
 
 RegisterNetEvent('item:Sharepickup')
-AddEventHandler('item:Sharepickup', function(name, obj , amount, x, y, z , value)
+AddEventHandler('item:Sharepickup', function(name, obj , amount, x, y, z , value , hash)
+    print(hash)
     if value == 1 then
         Pickups[obj] = {
             name = name,
             obj = obj,
             amount = amount,
+            hash = hash,
             inRange = false,
             coords = {x = x, y = y, z = z}
         }
@@ -157,6 +161,27 @@ AddEventHandler('item:Sharepickup', function(name, obj , amount, x, y, z , value
         Pickups[obj] = nil
     end
 end)
+
+
+RegisterNetEvent('player:loadWeapons')
+AddEventHandler('player:loadWeapons', function()
+    Citizen.Wait(5000)
+    RemoveAllPedWeapons(PlayerPedId() , true , true)
+    Citizen.Wait(2000)
+    for k, v in pairs(ITEMS) do
+        if tonumber(v) == nil then
+            Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), v[2], 0, false, true)
+            SetPedAmmo(PlayerPedId(), v[2] , v[1])
+        end
+    end
+end)
+
+RegisterNetEvent('player:giveWeapon')
+AddEventHandler('player:giveWeapon', function(ammo , hash)
+    Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), hash, 0, false, true)
+    SetPedAmmo(PlayerPedId(), hash , ammo)
+end)
+
 
 RegisterCommand('getinv', function(source, args)
     TriggerServerEvent("player:getItems", source)
@@ -287,6 +312,7 @@ RegisterNUICallback('GetNearPlayers', function(data, cb)
             foundAny = foundPlayers,
             players = elements,
             item = data.item,
+            item = data.hash,
             count = data.count,
             type = data.type,
             what = data.what
@@ -297,14 +323,17 @@ RegisterNUICallback('GetNearPlayers', function(data, cb)
 end)
 
 RegisterNUICallback('UseItem', function(data, cb)
-    print(data.item)
     TriggerServerEvent("item:use" , data.item)
 end)
 
 RegisterNUICallback('DropItem', function(data, cb)
-    print(data.item)
-    print(data.number)
-    TriggerServerEvent("item:drop", data.item, tonumber(data.number))
+    print(data.type)
+    if data.type == "item_standard" then
+        TriggerServerEvent("item:drop", data.item, tonumber(data.number) , 1)
+    else
+        TriggerServerEvent("item:drop", data.item, GetAmmoInPedWeapon(PlayerPedId(), tonumber(data.hash)), tonumber(data.hash))
+        RemoveWeaponFromPed(PlayerPedId(), tonumber(data.hash) , false)
+    end
     --	cb("ok")
 end)
 
@@ -317,9 +346,13 @@ RegisterNUICallback('GiveItem', function(data, cb)
             if GetPlayerServerId(players[i]) == data.player then
                 local name = tostring(data.data.item)
                 local amount = tonumber(data.data.count)
+                local hash = tonumber(data.data.hash)
                 local target = tonumber(data.player)
-                TriggerServerEvent('test_lols', name, amount, target)
-
+                if data.data.type == "item_standard" then
+                    TriggerServerEvent('test_lols', name, amount, target , 0)
+                else
+                    TriggerServerEvent('test_lols', name, amount, target , hash)
+                end
                 break
             end
         end
@@ -342,32 +375,49 @@ function loadPlayerInventory()
 
     for k, v in pairs(ITEMS) do
         local use = false
-        if tonumber(v) > 0 then
-            for _, u in pairs(Config.Usable) do
-                if k == u then
-                    use = true
-                    break
+        if tonumber(v) ~= nil then
+            if tonumber(v) > 0 then
+                for _, u in pairs(Config.Usable) do
+                    if k == u then
+                        use = true
+                        break
+                    end
                 end
+                local cK = k
+                if Config.Labels[k] ~= nil then
+                    cK = Config.Labels[k]
+                end
+                table.insert(test, value,{
+                    label     = cK,
+                    type      = 'item_standard',
+                    count     = v,
+                    name     = k,
+                    hash     = nil,
+                    usable    = use,
+                    rare      = false,
+                    limit      = 64,
+                    canRemove = true
+                })
+                value = value + 1
+
             end
-			local cK = k
-			if Config.Labels[k] ~= nil then
-				cK = Config.Labels[k]
-			end		
+
+        else
+
             table.insert(test, value,{
-                label     = cK,
-                type      = 'item_standard',
-                count     = v,
+                label     = k,
+                type      = 'item_weapon',
+                count     = GetAmmoInPedWeapon(PlayerPedId() , v[2]),
                 name     = k,
-                usable    = use,
+                hash     = v[2],
+                usable    = false,
                 rare      = false,
-                limit      = 64,
+                limit      = -1,
                 canRemove = true
             })
             value = value + 1
-
         end
     end
-
 
 
 
