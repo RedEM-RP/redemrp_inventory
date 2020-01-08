@@ -174,7 +174,8 @@ RegisterCommand('giveitem', function(source, args)
             if k.id == identifier and k.charid == charid then
                 local item = args[1]
                 local amount = args[2]
-                TriggerEvent("item:add", _source, {item, amount, 1}, identifier , charid)
+                local test = 1
+                TriggerEvent("item:add", _source, {item, amount, test}, identifier , charid)
                 print("add")
                 TriggerClientEvent('gui:ReloadMenu', _source)
                 break
@@ -318,9 +319,9 @@ AddEventHandler("test_lols222", function(source, name, amount, hash)
         local charid = user.getSessionVar("charid")
         for i,k in pairs(invTable) do
             if k.id == identifier and k.charid == charid then
-                TriggerEvent("item:add",_source, {name, amount}, identifier , charid)
+                TriggerEvent("item:add",_source, {name, amount, _hash}, identifier , charid)
                 if _hash ~= 1 then
-                    TriggerClientEvent("player:giveWeapon", _source, tonumber(amount) , _hash )
+                    TriggerClientEvent("player:giveWeapon", _source, tonumber(amount) , _hash)
                 end
 					TriggerClientEvent('gui:ReloadMenu', _source)
                 break
@@ -349,7 +350,8 @@ function inventory.addItem(_source, name , amount ,hash)
         local identifier = user.getIdentifier()
         local charid = user.getSessionVar("charid")
 		if hash == nil or hash == 0 then
-			TriggerEvent("item:add", _source ,{name, amount , 1}, identifier , charid)
+                        local test = 1
+			TriggerEvent("item:add", _source ,{name, amount , test}, identifier , charid)
 		else
 			TriggerEvent("item:add", _source ,{name, amount , hash}, identifier , charid)
 		end
