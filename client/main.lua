@@ -349,7 +349,7 @@ RegisterNUICallback('GiveItem', function(data, cb)
                 local hash = tonumber(data.data.hash)
                 local target = tonumber(data.player)
                 if data.data.type == "item_standard" then
-                    TriggerServerEvent('test_lols', name, amount, target , 0)
+                    TriggerServerEvent('test_lols', name, amount, target , 1)
                 else
                     TriggerServerEvent('test_lols', name, amount, target , hash)
                 end
