@@ -104,9 +104,9 @@ AddEventHandler("item:add", function(source, arg, identifier , charid)
                     newVal = val + amount
                     print(val)
                     print(newVal)
-                    invTable[i]["inventory"][name]= tonumber(math.floor(newVal))
+                    invTable[i]["inventory"][name]= tonumber(newVal)
                 else
-                    invTable[i]["inventory"][name]= tonumber(math.floor(amount))
+                    invTable[i]["inventory"][name]= tonumber(amount)
                 end
             else
                 invTable[i]["inventory"][name]= {tonumber(amount)  , hash}
@@ -133,7 +133,7 @@ AddEventHandler("item:delete", function(source, arg, identifier , charid)
                 invTable[i]["inventory"][name]= tonumber(newVal)
             else
                 invTable[i]["inventory"][name]= nil
-                TriggerClientEvent("player:removeWeapon", _source, tonumber(math.floor(amount)) , hash )
+                TriggerClientEvent("player:removeWeapon", _source, tonumber(amount) , hash )
             end
             TriggerClientEvent("gui:getItems", _source, k.inventory)
             TriggerEvent("player:savInvSv", _source)
