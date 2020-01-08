@@ -359,6 +359,26 @@ function inventory.delItem(_source, name , amount)
         TriggerEvent("item:delete", _source, {name , amount}, identifier , charid)
     end)
 end
+
+RegisterServerEvent("redemrp_inventory:deleteInv")
+AddEventHandler("redemrp_inventory:deleteInv", function(charid, Callback) 
+    local _source = source
+    local id
+    for k,v in ipairs(GetPlayerIdentifiers(_source))do
+        if string.sub(v, 1, string.len("steam:")) == "steam:" then
+            id = v
+            break
+        end
+    end
+	
+  local Callback = callback
+	MySQL.Async.fetchAll('DELETE FROM user_inventory WHERE `identifier`=@identifier AND `charid`=@charid;', {identifier = id, charid = charid}, function(result)
+		if result then
+		else
+		end
+	end)
+end)
+
 --------EXAMPLE---------Register Usable item---------------EXAMPLE
 RegisterServerEvent("RegisterUsableItem:wood")
 AddEventHandler("RegisterUsableItem:wood", function(source)
