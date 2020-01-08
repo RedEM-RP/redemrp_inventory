@@ -282,6 +282,7 @@ AddEventHandler("test_lols", function(name, amount , target ,hash)
     local _source = source
     local _name = name
     local _amount = amount
+	local all
     TriggerEvent('redemrp:getPlayerFromId', _source, function(user)
         local identifier = user.getIdentifier()
         local charid = user.getSessionVar("charid")
@@ -289,7 +290,9 @@ AddEventHandler("test_lols", function(name, amount , target ,hash)
             if k.id == identifier and k.charid == charid then
                 if hash == 1 then
                     local value = invTable[i]["inventory"][name]
-                    local all = value-amount
+                     all = value-amount
+				else
+					 all = amount
                 end
                 if all >= 0 then
                     TriggerEvent("item:delete",_source, { name , amount}, identifier , charid)
@@ -317,10 +320,9 @@ AddEventHandler("test_lols222", function(source, name, amount, hash)
             if k.id == identifier and k.charid == charid then
                 TriggerEvent("item:add",_source, {name, amount}, identifier , charid)
                 if _hash ~= 1 then
-                    TriggerClientEvent("player:giveWeapon", _source, tonumber(amount) , hash )
+                    TriggerClientEvent("player:giveWeapon", _source, tonumber(amount) , _hash )
                 end
-                TriggerClientEvent('gui:ReloadMenu', _source)
-
+					TriggerClientEvent('gui:ReloadMenu', _source)
                 break
             end
         end
@@ -342,12 +344,15 @@ function inventory.checkItem(_source, name)
     end)
     return tonumber(value)
 end
-function inventory.addItem(_source, name , amount)
+function inventory.addItem(_source, name , amount ,hash)
     TriggerEvent('redemrp:getPlayerFromId', _source, function(user)
         local identifier = user.getIdentifier()
         local charid = user.getSessionVar("charid")
-
-        TriggerEvent("item:add", _source ,{name, amount}, identifier , charid)
+		if hash == nil or hash == 0 then
+			TriggerEvent("item:add", _source ,{name, amount , 1}, identifier , charid)
+		else
+			TriggerEvent("item:add", _source ,{name, amount , hash}, identifier , charid)
+		end
     end)
 end
 
