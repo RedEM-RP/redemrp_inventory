@@ -174,7 +174,7 @@ RegisterCommand('giveitem', function(source, args)
             if k.id == identifier and k.charid == charid then
                 local item = args[1]
                 local amount = args[2]
-                TriggerEvent("item:add", _source, {item, amount}, identifier , charid)
+                TriggerEvent("item:add", _source, {item, amount, 1}, identifier , charid)
                 print("add")
                 TriggerClientEvent('gui:ReloadMenu', _source)
                 break
