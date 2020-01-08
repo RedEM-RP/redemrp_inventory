@@ -19,6 +19,7 @@ Press [B] to open inventory
 
 - /getinv - to reload inventory(dev)
 - /giveitem name count - to give yourself an item
+- /giveweapon name hash ammo - to give yourself an item
 
 ## 4. Usable Items
 - To Register usable item, use an example provided below (server-side)
