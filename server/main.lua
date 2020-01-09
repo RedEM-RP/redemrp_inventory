@@ -340,6 +340,9 @@ function inventory.checkItem(_source, name)
         for i,k in pairs(invTable) do
             if k.id == identifier and k.charid == charid then
                 value = invTable[i]["inventory"][name]
+		   if tonumber(value) == nil then 
+		       value = tonumber(0)
+		  end
             end
         end
     end)
