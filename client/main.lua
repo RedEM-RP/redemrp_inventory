@@ -2,6 +2,7 @@ local ITEMS = {}
 local active = false
 local PickPrompt
 local wait = 0
+local gotItems = false
 ------------------------- EVENTS -------------------------
 
 
@@ -16,6 +17,7 @@ end)
 RegisterNetEvent("gui:getItems")
 AddEventHandler("gui:getItems", function(THEITEMS)
     ITEMS = THEITEMS
+	 gotItems = true
 end)
 
 
@@ -323,7 +325,12 @@ RegisterNUICallback('GetNearPlayers', function(data, cb)
 end)
 
 RegisterNUICallback('UseItem', function(data, cb)
+if data.type == "item_standard" then
     TriggerServerEvent("item:use" , data.item)
+	elseif data.type == "item_weapon" then
+	 Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), tonumber(data.hash), 0, false, true)
+    SetPedAmmo(PlayerPedId(), tonumber(data.hash) , tonumber(data.amount))
+	end
 end)
 
 RegisterNUICallback('DropItem', function(data, cb)
@@ -412,7 +419,7 @@ function loadPlayerInventory()
                 count     = GetAmmoInPedWeapon(PlayerPedId() , v[2]),
                 name     = k,
                 hash     = v[2],
-                usable    = false,
+                usable    = true,
                 rare      = false,
                 limit      = -1,
                 canRemove = true
@@ -431,6 +438,23 @@ function loadPlayerInventory()
 end
 
 
-
+local time = math.random(500000,700000)
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(time)
+		if gotItems == true then       
+        print("save")
+		 for k, v in pairs(ITEMS) do
+		  if tonumber(v) == nil then
+		   print (k)
+			v[1] = GetAmmoInPedWeapon(PlayerPedId() , v[2])
+		
+		 end
+		 end
+          TriggerServerEvent("weapon:saveAmmo", ITEMS)
+        time = math.random(500000,700000)
+		end
+    end
+end)
 
 

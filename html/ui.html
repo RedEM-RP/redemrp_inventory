@@ -163,7 +163,7 @@
           data.push({
             text: "Use",
             action: function () {
-              $.post("http://redemrp_inventory/UseItem", JSON.stringify({ item: item.name }));
+              $.post("http://redemrp_inventory/UseItem", JSON.stringify({ item: item.name , type: item.type , hash: item.hash , amount: item.count}));
             }
           });
         }

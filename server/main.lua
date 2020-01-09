@@ -52,29 +52,37 @@ AddEventHandler("player:getItems", function()
     end)
 end)
 
+RegisterServerEvent("weapon:saveAmmo")
+AddEventHandler("weapon:saveAmmo", function(data)
+local _data = data
+local _source = source
+ TriggerEvent("player:savInvSv", _source, _data)
+end)
 
-AddEventHandler('player:savInvSv', function(source, id)
+RegisterServerEvent("player:savInvSv")
+AddEventHandler('player:savInvSv', function(source, data)
     local _source = source
-    local _id = id
-    if _id ~= nil then
-        _source = tonumber(_id)
-        print(source, 'forcing save for', _source, '...')
-    end
-    TriggerEvent('redemrp:getPlayerFromId', _source, function(user)
+	local _data = data
+	local eq
+ TriggerEvent('redemrp:getPlayerFromId', _source, function(user)
         local identifier = user.getIdentifier()
         local charid = user.getSessionVar("charid")
         --print(identifier)
         for i,k in pairs(invTable) do
             if k.id == identifier and k.charid == charid then
                 for name,value in pairs(k.inventory) do
-                    if value == 0 then
-                        k.inventory[name] = nil
-                    end
+					eq = k.inventory
+						if value == 0 then
+							eq[name] = nil
+						end
                 end
+				if _data ~= nil then
+					eq = _data					
+				end
                 MySQL.Async.execute('UPDATE user_inventory SET items = @items WHERE identifier = @identifier AND charid = @charid', {
                     ['@identifier']  = identifier,
                     ['@charid']  = charid,
-                    ['@items'] = json.encode(k.inventory)
+                    ['@items'] = json.encode(eq)
                 }, function (rowsChanged)
                     if rowsChanged == 0 then
                         print(('user_inventory: Something went wrong saving %s!'):format(identifier .. ":" .. charid))
@@ -83,11 +91,14 @@ AddEventHandler('player:savInvSv', function(source, id)
                     end
                 end)
 
-                break end
+                break 
+				
+				end
         end
 
     end)
 end)
+
 
 AddEventHandler("item:add", function(source, arg, identifier , charid)
     local _source = source
