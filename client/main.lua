@@ -360,7 +360,7 @@ RegisterNUICallback('GiveItem', function(data, cb)
                     local test = 1
                     TriggerServerEvent('test_lols', name, amount, target , test)
                 else
-                    TriggerServerEvent('test_lols', name, amount, target , hash)
+                    TriggerServerEvent('test_lols', name, GetAmmoInPedWeapon(PlayerPedId(), tonumber(hash)), target , hash)
                 end
                 break
             end
