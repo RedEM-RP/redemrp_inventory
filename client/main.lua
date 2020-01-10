@@ -314,7 +314,7 @@ RegisterNUICallback('GetNearPlayers', function(data, cb)
             foundAny = foundPlayers,
             players = elements,
             item = data.item,
-            item = data.hash,
+            hash = data.hash,
             count = data.count,
             type = data.type,
             what = data.what
