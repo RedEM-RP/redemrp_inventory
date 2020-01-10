@@ -21,12 +21,18 @@ AddEventHandler("player:getItems", function()
             if inventory[1] ~= nil then
                 print("doing stuff")
                 local inv = json.decode(inventory[1].items)
-                table.insert(invTable, {id = identifier, charid = charid , inventory = inv})
+                
                 for i,k in pairs(invTable) do
                     if k.id == identifier and k.charid == charid then
                         TriggerClientEvent("gui:getItems", _source, k.inventory)
                         TriggerClientEvent("player:loadWeapons", _source)
-                        break end
+                        break
+                    else
+                        table.insert(invTable, {id = identifier, charid = charid , inventory = inv})
+                        TriggerClientEvent("gui:getItems", _source, k.inventory)
+                        TriggerClientEvent("player:loadWeapons", _source)
+                        break 
+                    end
                 end
 
             else
