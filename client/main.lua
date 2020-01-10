@@ -180,6 +180,7 @@ end)
 
 RegisterNetEvent('player:giveWeapon')
 AddEventHandler('player:giveWeapon', function(ammo , hash)
+    Citizen.Wait(1000)
     Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), hash, 0, false, true)
     SetPedAmmo(PlayerPedId(), hash , ammo)
 end)
@@ -361,6 +362,7 @@ RegisterNUICallback('GiveItem', function(data, cb)
                     TriggerServerEvent('test_lols', name, amount, target , test)
                 else
                     TriggerServerEvent('test_lols', name, GetAmmoInPedWeapon(PlayerPedId(), tonumber(hash)), target , hash)
+		    RemoveWeaponFromPed(PlayerPedId(), hash , true)
                 end
                 break
             end
