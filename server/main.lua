@@ -360,6 +360,7 @@ function inventory.checkItem(_source, name)
 		   if tonumber(value) == nil then 
 		       value = tonumber(0)
 		  end
+                break
             end
         end
     end)
