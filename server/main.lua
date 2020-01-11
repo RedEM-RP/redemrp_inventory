@@ -12,7 +12,7 @@ end)
 
 AddEventHandler("player:getItems", function()
     local _source = source
-
+    local check = false
     TriggerEvent('redemrp:getPlayerFromId', _source, function(user)
         local identifier = user.getIdentifier()
         local charid = user.getSessionVar("charid")
@@ -21,19 +21,22 @@ AddEventHandler("player:getItems", function()
             if inventory[1] ~= nil then
                 print("doing stuff")
                 local inv = json.decode(inventory[1].items)
-                
                 for i,k in pairs(invTable) do
                     if k.id == identifier and k.charid == charid then
                         TriggerClientEvent("gui:getItems", _source, k.inventory)
                         TriggerClientEvent("player:loadWeapons", _source)
-                        break
-                    else
-                        table.insert(invTable, {id = identifier, charid = charid , inventory = inv})
-                        TriggerClientEvent("gui:getItems", _source, k.inventory)
-                        TriggerClientEvent("player:loadWeapons", _source)
-                        break 
+						check = true
+							print("LOAD OLD")
+						break
+                   
                     end
                 end
+				if check == false then
+					print("LOAD NEW")
+					table.insert(invTable, {id = identifier, charid = charid , inventory = inv})
+					TriggerClientEvent("gui:getItems", _source, inv)
+					TriggerClientEvent("player:loadWeapons", _source)
+				end
 
             else
                 local test = {
@@ -347,23 +350,32 @@ AddEventHandler("test_lols222", function(source, name, amount, hash)
     end)
 end)
 RegisterCommand('itemcheck', function(source, args)
-    print( data.checkItem(source , args[1]) )
+    local value =  data.checkItem(source , args[1])
+	print(value)
 end)
-function inventory.checkItem(_source, name)
-    local value = 0
+function checkItem(_source, name)
+ local value = 0
     TriggerEvent('redemrp:getPlayerFromId', _source, function(user)
         local identifier = user.getIdentifier()
         local charid = user.getSessionVar("charid")
         for i,k in pairs(invTable) do
             if k.id == identifier and k.charid == charid then
                 value = invTable[i]["inventory"][name]
+				
 		   if tonumber(value) == nil then 
-		       value = tonumber(0)
-		  end
+		       value = 0
+			    
+					end
                 break
             end
         end
     end)
+    return tonumber(value)
+end
+
+function inventory.checkItem(_source, name)
+local  value = checkItem(_source, name)
+  Wait(500)
     return tonumber(value)
 end
 function inventory.addItem(_source, name , amount ,hash)
