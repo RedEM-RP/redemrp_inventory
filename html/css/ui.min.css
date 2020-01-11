@@ -184,6 +184,7 @@ input#search:-ms-input-placeholder {
 	font-weight: 700;
 	bottom: 1px;
 	width: 100%;
+	margin-top:-10px;
 	background-color: transparent;
 	text-align: center;
 		background-image: url(../img/bg.png);
