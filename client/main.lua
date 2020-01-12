@@ -15,9 +15,10 @@ AddEventHandler("gui:ReloadMenu", function()
 end)
 
 RegisterNetEvent("gui:getItems")
-AddEventHandler("gui:getItems", function(THEITEMS)
+AddEventHandler("gui:getItems", function(THEITEMS ,PICK)
     ITEMS = THEITEMS
-	 gotItems = true
+    Pickups = PICK
+    gotItems = true
 end)
 
 
@@ -52,7 +53,20 @@ function SetupPickPrompt()
 
 end
 
-
+RegisterNetEvent('player:anim')
+AddEventHandler('player:anim', function(obj)
+  local dict = "amb_work@world_human_box_pickup@1@male_a@stand_exit_withprop"
+    RequestAnimDict(dict)
+    while not HasAnimDictLoaded(dict) do
+		Citizen.Wait(10)
+    end
+    TaskPlayAnim(PlayerPedId(), dict, "exit_front", 1.0, 8.0, -1, 1, 0, false, false, false)
+	Wait(1200)
+	PlaySoundFrontend("CHECKPOINT_PERFECT", "HUD_MINI_GAME_SOUNDSET", true, 1)
+  	  print("start")
+	Wait(1000)
+	ClearPedTasks(PlayerPedId())
+end)
 
 Citizen.CreateThread(function()
     SetupPickPrompt()
@@ -90,8 +104,7 @@ Citizen.CreateThread(function()
                     PromptSetVisible(PickPrompt, true)
                     active = true
                 end
-                if PromptHasHoldModeCompleted(PickPrompt) then
-                    PlaySoundFrontend("CHECKPOINT_PERFECT", "HUD_MINI_GAME_SOUNDSET", true, 1)
+                if PromptHasHoldModeCompleted(PickPrompt) then                    
                     TriggerServerEvent("item:onpickup",v.obj)
                     TriggerEvent("redemrp_notification:start", "COLLECTED: "..v.name.." ".."["..v.amount.."]", 3, "success")
                     v.inRange = true
@@ -109,6 +122,7 @@ end)
 RegisterNetEvent('item:removePickup')
 AddEventHandler('item:removePickup', function(obj)
     print(obj)
+    Wait(1500)
     SetEntityAsMissionEntity(obj, false, true)
     NetworkRequestControlOfEntity(obj)
     local timeout = 0
