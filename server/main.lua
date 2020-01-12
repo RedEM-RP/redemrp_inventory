@@ -23,7 +23,7 @@ AddEventHandler("player:getItems", function()
                 local inv = json.decode(inventory[1].items)
                 for i,k in pairs(invTable) do
                     if k.id == identifier and k.charid == charid then
-                        TriggerClientEvent("gui:getItems", _source, k.inventory)
+                        TriggerClientEvent("gui:getItems", _source, k.inventory, Pickups)
                         TriggerClientEvent("player:loadWeapons", _source)
 						check = true
 							print("LOAD OLD")
@@ -34,7 +34,7 @@ AddEventHandler("player:getItems", function()
 				if check == false then
 					print("LOAD NEW")
 					table.insert(invTable, {id = identifier, charid = charid , inventory = inv})
-					TriggerClientEvent("gui:getItems", _source, inv)
+					TriggerClientEvent("gui:getItems", _source, inv, Pickups)
 					TriggerClientEvent("player:loadWeapons", _source)
 				end
 
@@ -176,6 +176,7 @@ AddEventHandler("item:onpickup", function(id)
                 TriggerClientEvent("item:Sharepickup", -1, pickup.name, pickup.obj , pickup.amount, x, y, z, 2)
                 TriggerClientEvent('item:removePickup', -1, pickup.obj)
                 Pickups[id] = nil
+		TriggerClientEvent('player:anim', _source)
                 TriggerClientEvent('gui:ReloadMenu', _source)
                 break
             end
