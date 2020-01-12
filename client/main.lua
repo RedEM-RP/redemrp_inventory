@@ -5,19 +5,21 @@ local wait = 0
 local gotItems = false
 ------------------------- EVENTS -------------------------
 
-
-
-
-
 RegisterNetEvent("gui:ReloadMenu")
 AddEventHandler("gui:ReloadMenu", function()
     loadPlayerInventory()
 end)
 
+RegisterNetEvent("item:LoadPickups")
+AddEventHandler("item:LoadPickups", function(pick)
+    Pickups = pick
+	print("LOADED PICKUPS")
+end)
+
+
 RegisterNetEvent("gui:getItems")
-AddEventHandler("gui:getItems", function(THEITEMS ,PICK)
+AddEventHandler("gui:getItems", function(THEITEMS)
     ITEMS = THEITEMS
-    Pickups = PICK
     gotItems = true
 end)
 

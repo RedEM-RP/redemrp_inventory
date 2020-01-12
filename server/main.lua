@@ -1,7 +1,7 @@
 RegisterServerEvent("player:getItems")
 RegisterServerEvent("item:giveItem")
 local invTable = {}
-
+local Pickups = {}
 data = {}
 local inventory = {}
 data = inventory
@@ -17,49 +17,48 @@ AddEventHandler("player:getItems", function()
         local identifier = user.getIdentifier()
         local charid = user.getSessionVar("charid")
         --print(identifier)
-        MySQL.Async.fetchAll('SELECT * FROM user_inventory WHERE `identifier`=@identifier AND `charid`=@charid;', {identifier = identifier, charid = charid}, function(inventory)
-            if inventory[1] ~= nil then
-                print("doing stuff")
-                local inv = json.decode(inventory[1].items)
-                for i,k in pairs(invTable) do
-                    if k.id == identifier and k.charid == charid then
-                        TriggerClientEvent("gui:getItems", _source, k.inventory, Pickups)
-                        TriggerClientEvent("player:loadWeapons", _source)
-						check = true
-							print("LOAD OLD")
-						break
-                   
-                    end
-                end
-				if check == false then
-					print("LOAD NEW")
-					table.insert(invTable, {id = identifier, charid = charid , inventory = inv})
-					TriggerClientEvent("gui:getItems", _source, inv, Pickups)
-					TriggerClientEvent("player:loadWeapons", _source)
-				end
+        print("doing stuff")
+        for i,k in pairs(invTable) do
+            if k.id == identifier and k.charid == charid then
+                TriggerClientEvent("gui:getItems", _source, k.inventory)
+				TriggerClientEvent("item:LoadPickups", _source, Pickups)
+                TriggerClientEvent("player:loadWeapons", _source)
+                check = true
+                print("LOAD OLD")
+                break
 
-            else
-                local test = {
-                    ["water"] = 3,
-                    ["bread"] = 3,
-                }  MySQL.Async.execute('INSERT INTO user_inventory (`identifier`, `charid`, `items`) VALUES (@identifier, @charid, @items);',
-                    {
-                        identifier = identifier,
-                        charid = charid,
-                        items = json.encode(test)
-                    }, function(rowsChanged)
-                    end)
-                table.insert(invTable, {id = identifier, charid = charid , inventory = test})
-                for i,k in pairs(invTable) do
-                    if k.id == identifier and k.charid == charid then
-                        TriggerClientEvent("gui:getItems", _source, k.inventory)
-                        break end
-                end
             end
-        end)
-
+        end
+        if check == false then
+            print("LOAD NEW")
+            MySQL.Async.fetchAll('SELECT * FROM user_inventory WHERE `identifier`=@identifier AND `charid`=@charid;', {identifier = identifier, charid = charid}, function(inventory)
+                if inventory[1] ~= nil then
+                    local inv = json.decode(inventory[1].items)
+                    table.insert(invTable, {id = identifier, charid = charid , inventory = inv})
+                    TriggerClientEvent("gui:getItems", _source, inv)
+					TriggerClientEvent("item:LoadPickups", _source, Pickups)
+                    TriggerClientEvent("player:loadWeapons", _source)
+                else
+                    local test = {
+                        ["water"] = 3,
+                        ["bread"] = 3,
+                    }
+                    MySQL.Async.execute('INSERT INTO user_inventory (`identifier`, `charid`, `items`) VALUES (@identifier, @charid, @items);',
+                        {
+                            identifier = identifier,
+                            charid = charid,
+                            items = json.encode(test)
+                        }, function(rowsChanged)
+                        end)
+                    table.insert(invTable, {id = identifier, charid = charid , inventory = test})
+                    TriggerClientEvent("gui:getItems", _source, test)
+					TriggerClientEvent("item:LoadPickups", _source, Pickups)
+                end
+            end)
+        end
     end)
 end)
+
 
 RegisterServerEvent("weapon:saveAmmo")
 AddEventHandler("weapon:saveAmmo", function(data)
