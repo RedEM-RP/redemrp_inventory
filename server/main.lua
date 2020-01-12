@@ -1,7 +1,6 @@
 RegisterServerEvent("player:getItems")
 RegisterServerEvent("item:giveItem")
 local invTable = {}
-local Pickups = {}
 data = {}
 local inventory = {}
 data = inventory
@@ -36,7 +35,7 @@ AddEventHandler("player:getItems", function()
                     local inv = json.decode(inventory[1].items)
                     table.insert(invTable, {id = identifier, charid = charid , inventory = inv})
                     TriggerClientEvent("gui:getItems", _source, inv)
-					TriggerClientEvent("item:LoadPickups", _source, Pickups)
+			TriggerClientEvent("item:LoadPickups", _source, Pickups)
                     TriggerClientEvent("player:loadWeapons", _source)
                 else
                     local test = {
@@ -52,7 +51,7 @@ AddEventHandler("player:getItems", function()
                         end)
                     table.insert(invTable, {id = identifier, charid = charid , inventory = test})
                     TriggerClientEvent("gui:getItems", _source, test)
-					TriggerClientEvent("item:LoadPickups", _source, Pickups)
+			TriggerClientEvent("item:LoadPickups", _source, Pickups)
                 end
             end)
         end
