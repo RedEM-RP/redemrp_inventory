@@ -410,10 +410,10 @@ function loadPlayerInventory()
                         break
                     end
                 end
-                local cK = k
+		local cK = k         
                 if Config.Labels[k] ~= nil then
-                    cK = Config.Labels[k]
-                end
+                   		 cK = Config.Labels[k]
+               	 end		
                 table.insert(test, value,{
                     label     = cK,
                     type      = 'item_standard',
@@ -430,9 +430,16 @@ function loadPlayerInventory()
             end
 
         else
-
+	local cK = k
+	if Config.custom_names then               
+                if Config.Labels[k] ~= nil then
+                   	 cK = Config.Labels[k]
+               	 end
+	else
+		cK = GetLabelTextByHash(v[2])
+	end
             table.insert(test, value,{
-                label     = k,
+                label     = cK,
                 type      = 'item_weapon',
                 count     = GetAmmoInPedWeapon(PlayerPedId() , v[2]),
                 name     = k,
