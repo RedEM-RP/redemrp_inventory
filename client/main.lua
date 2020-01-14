@@ -95,8 +95,15 @@ Citizen.CreateThread(function()
             end
 
             if distance <= 5.0 then
-                DrawText3D(v.coords.x, v.coords.y, v.coords.z-0.5, v.name.." ".."["..v.amount.."]")
-
+               	if v.hash == 1 then
+		    local cK = v.name
+			 if Config.Labels[v.name] ~= nil then
+                             cK = Config.Labels[v.name]
+                         end
+                     DrawText3D(v.coords.x, v.coords.y, v.coords.z-0.5, cK.." ".."["..v.amount.."]")
+		else				
+    		 DrawText3D(v.coords.x, v.coords.y, v.coords.z-0.5, GetLabelTextByHash(v.hash).." ".."["..v.amount.."]")
+		 end
             end
 
             if distance <= 0.7 and not v.inRange  then
