@@ -432,7 +432,7 @@ function loadPlayerInventory()
         else
 
             table.insert(test, value,{
-                label     = k,
+                label     = GetLabelTextByHash(GetHashKey(k)),
                 type      = 'item_weapon',
                 count     = GetAmmoInPedWeapon(PlayerPedId() , v[2]),
                 name     = k,
