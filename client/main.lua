@@ -357,11 +357,13 @@ if data.type == "item_standard" then
 	end
 end)
 
-RegisterNUICallback('DropItem', function(data, cb)
+RegisterNUICallback('DropItem', function(data, cb)		
     print(data.type)
     if data.type == "item_standard" then
-        local test = 1
-        TriggerServerEvent("item:drop", data.item, tonumber(data.number) , test)
+	if tonumber(data.number) > 0 then
+       		local test = 1
+       		TriggerServerEvent("item:drop", data.item, tonumber(data.number) , test)
+	end
     else
         TriggerServerEvent("item:drop", data.item, GetAmmoInPedWeapon(PlayerPedId(), tonumber(data.hash)), tonumber(data.hash))
         RemoveWeaponFromPed(PlayerPedId(), tonumber(data.hash) , false)
@@ -381,8 +383,10 @@ RegisterNUICallback('GiveItem', function(data, cb)
                 local hash = tonumber(data.data.hash)
                 local target = tonumber(data.player)
                 if data.data.type == "item_standard" then
-                    local test = 1
-                    TriggerServerEvent('test_lols', name, amount, target , test)
+			if amount > 0 then
+                   	   local test = 1
+                    	   TriggerServerEvent('test_lols', name, amount, target , test)
+			end
                 else
                     TriggerServerEvent('test_lols', name, GetAmmoInPedWeapon(PlayerPedId(), tonumber(hash)), target , hash)
 		    RemoveWeaponFromPed(PlayerPedId(), hash , true)
