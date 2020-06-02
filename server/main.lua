@@ -65,7 +65,7 @@ AddEventHandler("player:getItems", function(target , src)
                         TriggerClientEvent("item:LoadPickups", _target, Pickups)
                         TriggerClientEvent("player:loadWeapons", _target)
                     else
-                        user.addMoney(50)
+                      --  user.addMoney(50)
                         local test = {
                             ["water"] = 3,
                             ["bread"] = 3,
