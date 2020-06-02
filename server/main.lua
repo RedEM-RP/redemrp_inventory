@@ -85,10 +85,6 @@ AddEventHandler("player:getItems", function(target , src)
             end
         end
     end)
-    Wait(1000)
-    if _target ==  _source  then
-        TriggerEvent("player:getCrafting", _target)
-    end
 end)
 
 RegisterServerEvent("weapon:saveAmmo")
