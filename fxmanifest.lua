@@ -27,5 +27,5 @@ files {
 	'html/img/bgPanel.png',
 	'html/img/bg.png',
     -- ICONS
-	'html/img/items/water.png'
+	'html/img/items/*.png'
 }
