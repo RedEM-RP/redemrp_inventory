@@ -1,7 +1,7 @@
 RegisterServerEvent("player:getItems")
 RegisterServerEvent("item:giveItem")
+
 local invTable = {}
-data = {}
 local inventory = {}
 data = inventory
 
