@@ -14,17 +14,11 @@ AddEventHandler("redemrp_inventory:LoadItems", function()
     local _source = source
 
     TriggerEvent("player:getItems", _source, _source)
-
 end)
 
 
 AddEventHandler("player:getItems", function(target , src)
-    local _source
-    if src ~= nil and src ~= 0 then
-        _source = tonumber(src)
-    else
-        _source = tonumber(source)
-    end
+    local _source = tonumber(src or source)
 
     local _target = tonumber(target)
     local check = false
