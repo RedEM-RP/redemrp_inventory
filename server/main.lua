@@ -27,14 +27,11 @@ AddEventHandler("player:getItems", function(target , src)
     end
 
     local _target = tonumber(target)
-    print(_target)
     local check = false
     TriggerEvent('redemrp:getPlayerFromId', _target, function(user)
         if user ~= nil then
             local identifier = user.getIdentifier()
             local charid = user.getSessionVar("charid")
-            --print(identifier)
-            print("doing stuff")
             for i,k in pairs(invTable) do
                 if k.id == identifier and k.charid == charid then
                     if _target ==  _source  then
@@ -47,13 +44,11 @@ AddEventHandler("player:getItems", function(target , src)
                         TriggerClientEvent("player:loadWeapons", _target)
                     end
                     check = true
-                    print("LOAD OLD")
                     break
 
                 end
             end
             if check == false then
-                print("LOAD NEW")
                 MySQL.Async.fetchAll('SELECT * FROM user_inventory WHERE `identifier`=@identifier AND `charid`=@charid;', {identifier = identifier, charid = charid}, function(inventory)
                     if inventory[1] ~= nil then
                         local inv = json.decode(inventory[1].items)
@@ -62,7 +57,6 @@ AddEventHandler("player:getItems", function(target , src)
                         TriggerClientEvent("item:LoadPickups", _target, Pickups)
                         TriggerClientEvent("player:loadWeapons", _target)
                     else
-                      --  user.addMoney(50)
                         local test = {
                             ["water"] = 3,
                             ["bread"] = 3,
@@ -100,7 +94,6 @@ AddEventHandler('player:savInvSv', function(source, data)
         if user ~= nil then
             local identifier = user.getIdentifier()
             local charid = user.getSessionVar("charid")
-            --print(identifier)
             for i,k in pairs(invTable) do
                 if k.id == identifier and k.charid == charid then
                     eq = k.inventory
@@ -128,8 +121,6 @@ AddEventHandler('player:savInvSv', function(source, data)
                     }, function (rowsChanged)
                         if rowsChanged == 0 then
                             print(('user_inventory: Something went wrong saving %s!'):format(identifier .. ":" .. charid))
-                        else
-                            print("saved")
                         end
                     end)
 
@@ -144,13 +135,11 @@ end)
 
 AddEventHandler('playerDropped', function()
     local _source = source
-    print("Save Inventory ".._source)
     TriggerEvent("player:savInvSv", _source)
     TriggerEvent('redemrp:getPlayerFromId', _source, function(user)
         if user ~= nil then
             local identifier = user.getIdentifier()
             local charid = user.getSessionVar("charid")
-            --print(identifier)
             for i,k in pairs(invTable) do
                 if k.id == identifier and k.charid == charid then
                     invTable[i] = nil
@@ -188,13 +177,10 @@ Citizen.CreateThread(function()
             }, function (rowsChanged)
                 if rowsChanged == 0 then
                     print(('user_inventory: Something went wrong saving %s!'):format(k.id .. ":" .. k.charid))
-                else
-                    print("saved")
                 end
             end)
             Wait(150)
         end
-        print("Total saved: "..saved.." inventory")
     end
 
 end)
@@ -209,7 +195,6 @@ AddEventHandler("item:add", function(source, arg)
     local hash
     if tonumber(hash2) == nil then
         hash = GetHashKey(hash2)
-        print("poszlo")
     else
         hash = hash2
     end
@@ -218,7 +203,6 @@ AddEventHandler("item:add", function(source, arg)
         local charid = user.getSessionVar("charid")
         for i,k in pairs(invTable) do
             if k.id == identifier and k.charid == charid then
-                --    print(name)
                 if hash == 1 then
                     if inventory.checkItem(_source, name) + amount <= inventory.checkLimit(_source,name) then
                         if k.inventory[name] ~= nil then
@@ -238,8 +222,6 @@ AddEventHandler("item:add", function(source, arg)
                     TriggerClientEvent("player:giveWeapon", _source, tonumber(amount) , hash )
                 end
                 TriggerClientEvent("gui:getItems", _source, k.inventory)
-                --   TriggerEvent("player:savInvSv", _source)
-                --	 TriggerEvent("player:getCrafting", _source)
                 break
             end
         end
@@ -299,7 +281,6 @@ RegisterCommand('giveitem', function(source, args)
                     local amount = args[2]
                     local test = 1
                     TriggerEvent("item:add", _source, {item, amount, test}, identifier , charid)
-                    print("add")
                     TriggerClientEvent('gui:ReloadMenu', _source)
                     break
                 end
@@ -308,32 +289,12 @@ RegisterCommand('giveitem', function(source, args)
     end)
 end)
 
--- RegisterCommand('giveweapon', function(source, args)
--- local _source = source
--- TriggerEvent('redemrp:getPlayerFromId', _source, function(user)
--- local identifier = user.getIdentifier()
--- local charid = user.getSessionVar("charid")
--- for i,k in pairs(invTable) do
--- if k.id == identifier and k.charid == charid then
--- local name = args[1]
--- local WeaponHash = args[2]
--- local Ammo = args[3]
--- TriggerEvent("item:add", _source, {name ,Ammo, WeaponHash}, identifier , charid)
--- print("add")
--- TriggerClientEvent('gui:ReloadMenu', _source)
--- break
--- end
--- end
--- end)
--- end)
-
 RegisterServerEvent("item:use")
 AddEventHandler("item:use", function(val)
     local _source = source
     local name = val
     local amount = 1
     local DisplayName2 = name
-    print("poszlo")
     if Config.Labels[name] ~= nil then
         DisplayName2 = Config.Labels[name]
     end
@@ -376,7 +337,6 @@ end)
 RegisterServerEvent("item:SharePickupServer")
 AddEventHandler("item:SharePickupServer", function(name, obj , amount, x, y, z , hash)
     TriggerClientEvent("item:Sharepickup", -1, name, obj , amount, x, y, z, 1, hash)
-    print("poszlo server")
     Pickups[obj] = {
         name = name,
         obj = obj,
@@ -428,8 +388,6 @@ AddEventHandler("test_lols", function(name, amount , target ,hash)
             queue = "right"
         })
 
-    else
-        print("nie ma przedmiotu")
     end
 
 end)
