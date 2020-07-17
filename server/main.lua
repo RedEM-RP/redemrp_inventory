@@ -1,6 +1,3 @@
-math.randomseed(os.time())
-
-
 RegisterServerEvent("player:getItems")
 RegisterServerEvent("item:giveItem")
 local invTable = {}
