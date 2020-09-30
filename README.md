@@ -88,8 +88,7 @@ data.updateCraftings(-1)
 local playerInventory = data.getPlayerInventory(source) --- return player items
 TriggerEvent("redemrp_inventory:SearchPlayer", target) -- search player
 ```
-TO DO :
-*Server code require optimization
+
 
 ![alt text](https://i.imgur.com/ivrqvgt.png)
 
