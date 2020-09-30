@@ -2,7 +2,6 @@ Config = {}
 
 Config.MaxWeight = 24.0
 
-Config.MultiServer = true ---- If you have more than one server with synced DB
 
 Config.Crafting = {
 
