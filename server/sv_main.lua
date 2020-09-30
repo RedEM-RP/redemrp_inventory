@@ -713,7 +713,7 @@ end
 function SharedInventoryFunctions.removeLocker(_source , id)
 	local _id = id
     CreatedLockers[_id] = nil
-	 MySQL.Async.fetchAll('DELETE FROM user_inventory WHERE `identifier`=@identifier AND `charid`=@charid;', {identifier = _id, charid = 0}, function(result)
+	 MySQL.Async.fetchAll('DELETE FROM user_locker WHERE `identifier`=@identifier AND `charid`=@charid;', {identifier = _id, charid = 0}, function(result)
 
     end)
 	TriggerClientEvent("redemrp_inventory:SendLockers", _source, CreatedLockers)
