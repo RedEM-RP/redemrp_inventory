@@ -30,19 +30,20 @@ end)
 - You need also to add usable item in redemrp_inventory config.lua file (example provided below)
 
 ```
-["bread"] = {
+["bread"] =
+    {
+        label = "Bread",
+        description = "?????????",
+        weight = 0.1,
+        canBeDropped = true,
+        canBeUsed = true,
+        requireLvl = 0,
+        limit = 20,
+        imgsrc = "items/bread.png",
+        type = "item_standard",
 
-items = {
-		"empty","empty","empty",
-		"wheat","wheat","wheat",
-		"empty","empty","empty"
-		},
-requireJob = "empty",
-type = "cooking",
-amount = 1,
 
-
-}
+    }
 ```
 
 ## 5. Developing
