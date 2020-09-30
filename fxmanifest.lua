@@ -1,31 +1,25 @@
-game 'rdr3'
-
-fx_version 'adamant'
+fx_version "adamant"
+games {"rdr3"}
 rdr3_warning 'I acknowledge that this is a prerelease build of RedM, and I am aware my resources *will* become incompatible once RedM ships.'
-ui_page 'html/ui.html'
-
 client_scripts {
-  'client/main.lua',
-  'config.lua'
+	'client/cl_main.lua',
 }
 
 server_scripts {
-  '@mysql-async/lib/MySQL.lua',
-  'config.lua',
-  'server/main.lua'
+	'config.lua',
+	'@mysql-async/lib/MySQL.lua',
+	'server/Create_items.lua',
+	'server/sv_main.lua',
+}
+files{
+'html/inventory.html',
+'html/crock.ttf',
+'html/*.png',
+'html/js/jquery-1.4.1.min.js',
+'html/js/jquery.jcarousel.pack.js',
+'html/js/listener.js',
+'html/js/inventory.js',
+'html/items/*.png',
 }
 
-files {
-    'html/ui.html',
-    'html/css/contextMenu.min.css',
-    'html/css/jquery.dialog.min.css',
-    'html/css/ui.min.css',
-    'html/js/config.js',
-    'html/js/contextMenu.min.js',
-    'html/js/jquery.dialog.min.js',
-    'html/fonts/crock.ttf',
-	'html/img/bgPanel.png',
-	'html/img/bg.png',
-    -- ICONS
-	'html/img/items/*.png'
-}
+ui_page "html/inventory.html"
