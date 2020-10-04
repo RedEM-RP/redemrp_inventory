@@ -63,8 +63,12 @@ function CreateInventory(items)
     local weight = 0.0
     for i,k in pairs(items) do
         local meta = k.meta or {}
-		if Config.Items[i] then
-            table.insert(items_table, CreateItem(i, k.amount, meta))
+	local name = i
+        if type(i) ~= "string" then
+           name = k.name
+        end
+		if Config.Items[name] then
+            table.insert(items_table, CreateItem(name, k.amount, meta))
             if items_table[#items_table].getData().type == "item_standard" then
                 weight = weight + items_table[#items_table].getData().weight * k.amount
             else
