@@ -5,7 +5,7 @@ local DroppedItems = {}
 local CreatedLockers = {}
 local SharedInventoryFunctions = {}
 local CreatedCraftings = {}
-
+math.randomseed(os.time())
 AddEventHandler('redemrp_inventory:getData', function(cb)
     cb(SharedInventoryFunctions)
 end)
