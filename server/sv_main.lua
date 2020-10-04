@@ -147,12 +147,13 @@ AddEventHandler("redemrp:playerDropped", function(_player)
     local ToSaveLocker = {}
     if player_inventory[1] ~= nil then
         for i,k in pairs(player_inventory) do
-            ToSaveInventory[k.getName()] = {amount = k.getAmount(), meta = k.getMeta()}
+            table.insert(ToSaveInventory ,{name = k.getName(), amount = k.getAmount(), meta = k.getMeta()})
+
         end
     end
     if player_locker[1] ~= nil then
         for i,k in pairs(player_locker) do
-            ToSaveLocker[k.getName()] = {amount = k.getAmount(), meta = k.getMeta()}
+            table.insert(ToSaveLocker ,{name = k.getName(), amount = k.getAmount(), meta = k.getMeta()}) 
         end
     end
     local JsonItemsInventory = json.encode(ToSaveInventory)
@@ -189,10 +190,10 @@ AddEventHandler('onResourceStop', function(resourceName)
         return
     end
     print('The resource ' .. resourceName .. ' was stopped.')
-    for i,k in pairs(Locker) do
-        local player_locker  = k
-        local identifier = i:sub(1, -3)
-        local charid = i:sub(#i ,#i)
+    for j,l in pairs(Locker) do
+        local player_locker  = l
+        local identifier = j:sub(1, -3)
+        local charid = j:sub(#j ,#j)
         if "number" ~= type(charid) and string.len(i) ~= 23 then
             identifier = i
             charid = 0
@@ -200,7 +201,7 @@ AddEventHandler('onResourceStop', function(resourceName)
             local ToSaveLocker = {}
             if player_locker[1] ~= nil then
                 for i,k in pairs(player_locker) do
-                    ToSaveLocker[k.getName()] = {amount = k.getAmount(), meta = k.getMeta()}
+                   table.insert(ToSaveLocker ,{name = k.getName(), amount = k.getAmount(), meta = k.getMeta()})
                 end
             end
             local JsonItemsLocker = json.encode(ToSaveLocker)
@@ -221,15 +222,16 @@ end)
     SetTimeout(900000, function()
         Citizen.CreateThread(function()
             local saved  = 0
-            for i,k in pairs(Inventory) do
-                local player_inventory  = k
-                local identifier = i:sub(1, -3)
-                local charid = i:sub(#i ,#i)
+            for j,l in pairs(Inventory) do
+                local player_inventory  = l
+                local identifier = j:sub(1, -3)
+                local charid = j:sub(#j ,#j)
                 saved = saved + 1
                 local ToSaveInventory = {}
                 if player_inventory[1] ~= nil then
                     for i,k in pairs(player_inventory) do
-                        ToSaveInventory[k.getName()] = {amount = k.getAmount(), meta = k.getMeta()}
+                        table.insert(ToSaveInventory ,{name = k.getName(), amount = k.getAmount(), meta = k.getMeta()})
+
                     end
                 end
                 local JsonItemsInventory = json.encode(ToSaveInventory)
@@ -245,10 +247,10 @@ end)
                 end)
             end
 			 local saved_locker  = 0
-            for i,k in pairs(Locker) do
-                local player_locker  = k
-                local identifier = i:sub(1, -3)
-                local charid = i:sub(#i ,#i)
+            for j,l in pairs(Locker) do
+                local player_locker  = l
+                local identifier = j:sub(1, -3)
+                local charid = j:sub(#j ,#j)
 				saved_locker = saved_locker + 1
                 if "number" ~= type(charid) and string.len(i) ~= 23 then
                     identifier = i
@@ -257,7 +259,7 @@ end)
                 local ToSaveLocker = {}
                 if player_locker[1] ~= nil then
                     for i,k in pairs(player_locker) do
-                        ToSaveLocker[k.getName()] = {amount = k.getAmount(), meta = k.getMeta()}
+                        table.insert(ToSaveLocker ,{name = k.getName(), amount = k.getAmount(), meta = k.getMeta()})
                     end
                 end
                 local JsonItemsLocker = json.encode(ToSaveLocker)
@@ -406,7 +408,7 @@ end)
 
 function getInventoryItemFromName(name, items_table , meta)
     for i,k in pairs(items_table) do
-        if not meta.uid and not  meta.fishweight and not meta.waterlevel then
+        if  k.getData().type ~= "item_weapon" and not  meta.fishweight and not meta.waterlevel then
             if name == k.getName() then
                 return items_table[i] , i
             end
@@ -431,6 +433,7 @@ function getInventoryItemFromName(name, items_table , meta)
     end
     return false, false
 end
+
 
 
 function addItem (name, amount ,meta , identifier , charid , lvl )
