@@ -763,8 +763,8 @@ function SharedInventoryFunctions.getItem(_source, name , meta)
 							if canBeAdded > amount then
 								canBeAdded = data.ItemInfo.limit - data.ItemAmount
 							end
-							if canBeAdded > 0 then
-								output =  addItem(name, canBeAdded, data.ItemMeta, identifier , charid , lvl)
+							output = addItem(name, canBeAdded, data.ItemMeta, identifier , charid , lvl)
+							if amount-canBeAdded > 0 then
 								TriggerClientEvent("redemrp_inventory:CreatePickup", _source, name , amount-canBeAdded, data.ItemMeta, data.ItemInfo.label, data.ItemInfo.imgsrc)
 							end
 					   else
