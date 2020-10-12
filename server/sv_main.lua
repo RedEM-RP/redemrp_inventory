@@ -194,7 +194,7 @@ AddEventHandler('onResourceStop', function(resourceName)
         local player_locker  = l
         local identifier = j:sub(1, -3)
         local charid = j:sub(#j ,#j)
-        if "number" ~= type(charid) and string.len(i) ~= 23 then
+        if "number" ~= type(charid) and string.len(j) ~= 23 then
             identifier = j
             charid = 0
 
@@ -252,7 +252,7 @@ end)
                 local identifier = j:sub(1, -3)
                 local charid = j:sub(#j ,#j)
 				saved_locker = saved_locker + 1
-                if "number" ~= type(charid) and string.len(i) ~= 23 then
+                if "number" ~= type(charid) and string.len(j) ~= 23 then
                     identifier = j
                     charid = 0
                 end
