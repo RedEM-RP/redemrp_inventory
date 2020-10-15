@@ -406,34 +406,41 @@ end)
 
 
 
+local AllMeta = {
+"uid",
+"fishweight",
+"waterlevel",
+}
+
 function getInventoryItemFromName(name, items_table , meta)
+    local check = false
     for i,k in pairs(items_table) do
-        if  k.getData().type ~= "item_weapon" and not  meta.fishweight and not meta.waterlevel then
+	
+        for j,l in pairs(AllMeta) do
+            if meta[l] ~= nil then
+                check = true		
+                break
+            end
+        end
+		
+        if not check then
             if name == k.getName() then
                 return items_table[i] , i
             end
         else
 		
-            if meta.uid then
-                if name == k.getName() and tostring(meta.uid) == tostring(k.getMeta().uid)  then
-                    return items_table[i] , i
-                end
-			end
-            if meta.fishweight then
-                if name == k.getName() and tostring(meta.fishweight) == tostring(k.getMeta().fishweight) then
-                    return items_table[i] , i
+            for j,l in pairs(AllMeta) do
+                if meta[l] ~= nil then				
+                    if name == k.getName() and tostring(meta[l]) == tostring(k.getMeta()[l])  then
+                        return items_table[i] , i
+                    end
                 end
             end
-            if meta.waterlevel then
-                if name == k.getName() and tostring(meta.waterlevel) == tostring(k.getMeta().waterlevel) then
-                    return items_table[i] , i
-                end
-            end
+			
         end
     end
     return false, false
 end
-
 
 
 function addItem (name, amount ,meta , identifier , charid , lvl )
@@ -752,12 +759,15 @@ function SharedInventoryFunctions.getItem(_source, name , meta)
                 data.ItemInfo = item.getData()
                 data.ItemMeta = item.getMeta()
                 data.ItemAmount = item.getAmount()
-                function data.ChangeMeta(meta)
-                  item.setMeta(meta)
+                function data.ChangeMeta(m)
+                  item.setMeta(m)
 				  TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  {} , money , InventoryWeight[identifier .. "_" .. charid])
                 end
                 function data.AddItem(amount)
                     local output = false
+		    if data.ItemInfo.type == "item_weapon" then
+                        data.ItemMeta = meta or {}
+                    end
                     output =  addItem(name, amount, data.ItemMeta, identifier , charid , lvl)
                     if not output then
                         if data.ItemInfo.type ~= "item_weapon" then
