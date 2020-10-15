@@ -83,8 +83,8 @@ Config.Items = {
     },
 	 ["p_baitBread01x"] =
     {
-        label = "Przynęta z chleba",
-        description = "Przydaje się podczas łowienia mniejszych ryb",
+        label = "Bread Bait",
+        description = "?????????",
         weight = 0.01,
         canBeDropped = true,
         canBeUsed = true,
@@ -100,8 +100,8 @@ Config.Items = {
 
     ["p_baitCheese01x"] =
     {
-        label = "Przynęta z sera",
-        description = "Przydaje się podczas łowienia wielu gatunków ryb",
+        label = "Cheese Bait",
+        description = "?????????",
         weight = 0.01,
         canBeDropped = true,
         canBeUsed = true,
@@ -115,8 +115,8 @@ Config.Items = {
 
     ["p_baitCorn01x"] =
     {
-        label = "Przynęta z chleba",
-        description = "Przydaje się podczas łowienia wielu gatunków ryb",
+        label = "Corn Bait",
+        description = "?????????",
         weight = 0.01,
         canBeDropped = true,
         canBeUsed = true,
@@ -129,8 +129,8 @@ Config.Items = {
     },
     ["p_baitCricket01x"] =
     {
-        label = "Przynęta z krykieta",
-        description = "Przydaje się podczas łowienia mniejszych ryb",
+        label = "Cricket Bait",
+        description = "?????????",
         weight = 0.01,
         canBeDropped = true,
         canBeUsed = true,
@@ -146,8 +146,8 @@ Config.Items = {
 
     ["p_finishedragonfly01x"] =
     {
-        label = "Przynęta na rzeke",
-        description = "Przydaje się podczas łowienia ryb na rzece",
+        label = "River Bait",
+        description = "?????????",
         weight = 0.05,
         canBeDropped = true,
         canBeUsed = true,
@@ -162,8 +162,8 @@ Config.Items = {
 
     ["p_FinisdFishlure01x"] =
     {
-        label = "Przynęta na jezioro",
-        description = "Przydaje się podczas łowienia mniejszych ryb",
+        label = "Lake Bait",
+        description = "?????????",
         weight = 0.05,
         canBeDropped = true,
         canBeUsed = true,
@@ -177,8 +177,8 @@ Config.Items = {
 
     ["p_finishdcrawd01x"] =
     {
-        label = "Przynęta na bagno",
-        description = "Przydaje się podczas łowienia na bagnie",
+        label = "Swamp Bait",
+        description = "?????????",
         weight = 0.05,
         canBeDropped = true,
         canBeUsed = true,
@@ -189,7 +189,51 @@ Config.Items = {
 
 
     },
+	
+	["smallfish"] =
+    {
+        label = "Small Fish",
+        description = "?????????",
+        weight = 0.3,
+        canBeDropped = true,
+        canBeUsed = false,
+        requireLvl = 0,
+        limit = 20,
+        imgsrc = "items/smallfish.png",
+        type = "item_standard",
 
+
+    },
+
+
+    ["mediumfish"] =
+    {
+        label = "Medium Fish", 
+        description = "?????????",
+        weight = 2.3,
+        canBeDropped = true,
+        canBeUsed = false,
+        requireLvl = 0,
+        limit = 15,
+        imgsrc = "items/mediumfish.png",
+        type = "item_standard",
+
+
+    },
+
+    ["largefish"] =
+    {
+        label = "Large Fish",
+        description = "?????????",
+        weight = 4.5,
+        canBeDropped = true,
+        canBeUsed = false,
+        requireLvl = 0,
+        limit = 10,
+        imgsrc = "items/largefish.png",
+        type = "item_standard",
+
+    },
 
 ["WEAPON_FISHINGROD"] =
 	{
