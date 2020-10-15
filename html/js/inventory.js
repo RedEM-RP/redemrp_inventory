@@ -4,7 +4,6 @@ function createObjectBox(object) {
  const box = document.createElement("div");
  box.setAttribute('class', 'item');
  box.setAttribute('data-amount', object.amount);
- console.log(object.box);
  if (object.box > 3) {
   document.getElementsByClassName(`slot${object.box-3}`)[0].appendChild(box);
  } else {
@@ -290,7 +289,6 @@ var grids = [
    handle: '.item-content-main, .item-content-amount-moved'
   }
  }) .on('send', function(data) {
-	console.log(data.toGrid._id);
 	if (data.toGrid._id == 1) {
 	 var object = getObjectById(data.item._id);
 	 $.post('http:/redemrp_inventory/removeitem', JSON.stringify({data:object, target:targetPlayerId}), );
@@ -298,7 +296,6 @@ var grids = [
 	 onDragFinished(data)}
 	 )
   .on('beforeReceive', function(data) {
-	  console.log(data.fromGrid._id);
 	 if (data.fromGrid._id == 1) {
 		var object = getObjectById(data.item._id);
 		$.post('http:/redemrp_inventory/additem', JSON.stringify({data:object , target:targetPlayerId}), );
@@ -329,7 +326,7 @@ var grids = [
    .on('receive', function(data) {
 	 if (data.fromGrid._id == 2) {
 		var object = getObjectById(data.item._id);
-		  console.log("test");
+	
 		$.post('http:/redemrp_inventory/dropitem', JSON.stringify({data:object}), );
 	 }else{
 		 ItemBack(data); 
@@ -359,7 +356,7 @@ var grids = [
   }
  })
     .on('receive', function(data) {
-	  console.log(data.fromGrid._id);
+	
 	 if (data.fromGrid._id == 2) {
 		var object = getObjectById(data.item._id);
 		$.post('http:/redemrp_inventory/useitem', JSON.stringify({data:object}), );
@@ -608,7 +605,7 @@ function GetCraftingSlotData(id)
 	var name = "empty";
 	var amount = 0;
         var meta = [];
-	console.log(id);
+	
 	if (grids[id]._items[0] != null) {
 	var itemId = grids[id]._items[0]._id
 	var object = getObjectById(itemId);
@@ -651,7 +648,7 @@ grids[1].sort('amount:desc',{layout: 'instant'});
 
 function show(playerInventory, otherInventory, crafting) {
  document.body.style.display = 'block';
- console.log(otherInventory);
+
  document.getElementsByClassName('box0')[0].style.display = (otherInventory) ? 'block' : 'none';
  document.getElementsByClassName('box1')[0].style.display = (playerInventory) ? 'block' : 'none';
  document.getElementsByClassName('grid')[0].style.display = (crafting) ? 'block' : 'none';
@@ -681,7 +678,7 @@ $(document).keydown(function(e) {
         var object = getObjectById(objects[i].id);
         var object2 = getObjectById(item._id);
         if (object2.name == object.name && deepEqual(object2.meta, object.meta)) {
-         console.log("test");
+         
          boxContent = getObjectHTML(item._id);
          boxContent.lastChild.innerHTML = parseInt(object2.amount + object.amount);
          object2.amount = parseInt(object2.amount + object.amount);
@@ -735,7 +732,7 @@ grids[1].sort('amount:desc',{layout: 'instant'});
 
 $(document).keyup(function(e) {
  if (e.keyCode == 27 || e.keyCode == 66) { //hide eq
-  console.log("off");
+
   hide();
   $.post('http:/redemrp_inventory/close');
  }
