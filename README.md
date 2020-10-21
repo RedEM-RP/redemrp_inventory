@@ -68,7 +68,8 @@ local ItemInfo = data.getItemData('bread') -- return info from config
 
 ====================
 --- -1 is send to all
---- type is id or "private"
+--- type is id "this_is_my_locker"
+--- job is job name or nill
 data.createLocker(type, x , y , z , job)
 data.removeLocker(-1 , id) - remove locker with DB
 data.changeLockerData(id , x , y , z , job) -- change locker data
