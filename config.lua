@@ -235,6 +235,34 @@ Config.Items = {
 
     },
 
+    ["blueberry"] =
+    {
+        label = "Blueberry",
+        description = "?????????",
+        weight = 0.1,
+        canBeDropped = true,
+        canBeUsed = true,
+        requireLvl = 0,
+        limit = 20,
+        imgsrc = "items/blueberry.png",
+        type = "item_standard",
+
+
+    },
+    ["stick"] =
+    {
+        label = "Stick",
+        description = "?????????",
+        weight = 0.02,
+        canBeDropped = true,
+        canBeUsed = false,
+        requireLvl = 0,
+        limit = 64,
+        imgsrc = "items/stick.png",
+        type = "item_standard",
+
+
+    },
 ["WEAPON_FISHINGROD"] =
 	{
 		label = "Fishingrod",
