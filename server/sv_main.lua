@@ -857,7 +857,7 @@ AddEventHandler("redemrp_inventory:craft", function(data , type)
     local arraymin = math.min(table.unpack(table_value))
 
     for outputItem, craftingData in pairs(Config.Crafting) do
-        local collision = false
+        local collision = true
 
         local cItems = craftingData.items
 
