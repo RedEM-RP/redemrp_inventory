@@ -855,41 +855,36 @@ AddEventHandler("redemrp_inventory:craft", function(data , type)
     end
 	if table_value[1] then
     local arraymin = math.min(table.unpack(table_value))
-    for a,b in pairs(Config.Crafting) do
-        local craftCheck = true
-        if data.slot_1[1] ~= b.items[1] then
-            craftCheck = false
-        end
-        if data.slot_2[1] ~= b.items[2] then
-            craftCheck = false
-        end
-        if data.slot_3[1] ~= b.items[3] then
-            craftCheck = false
-        end
-        if data.slot_4[1] ~= b.items[4] then
-            craftCheck = false
-        end
-        if data.slot_5[1] ~= b.items[5] then
-            craftCheck = false
-        end
-        if data.slot_6[1] ~= b.items[6] then
-            craftCheck = false
-        end
-        if data.slot_7[1] ~= b.items[7] then
-            craftCheck = false
-        end
-        if data.slot_8[1] ~= b.items[8] then
-            craftCheck = false
-        end
-        if data.slot_9[1] ~= b.items[9] then
-            craftCheck = false
-        end
-        if craftCheck then
-            itemtoCraft = a
-            break
+
+    for outputItem, craftingData in pairs(Config.Crafting) do
+        local collision = false
+
+        local cItems = craftingData.items
+
+        for i = 1, 9 do
+            local dataAtSlot = data[i]
+            local itemAtSlot = dataAtSlot[1]
+            local amountAtSlot = dataAtSlot[2]
+
+            local cInput = cItems[i]
+
+            local cItem, cAmount = string.match(cInput, '(%a+)%s*,%s*(%d+)')
+            cItem = cItem or cInput
+
+            if cItem then
+                if itemAtSlot ~= cItem or (cAmount ~= nil and amountAtSlot ~= tonumber(cAmount)) then
+                    collision = false
+                    break
+                end
+            end
         end
 
+        if collision then
+            itemtoCraft = outputItem
+            break
+        end
     end
+
     if itemtoCraft ~= nil then
         local  CraftData = Config.Crafting[itemtoCraft]
         if CraftData.type == _type or CraftData.type == "empty" then
