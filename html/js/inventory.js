@@ -589,7 +589,7 @@ function GetNumberOfItems(data) {
 $( "#craftButton" ).click(function() {
   const message = [];
 
-  for (i = 4; i < 12; i++) {
+  for (i = 4; i <= 12; i++) {
     message.push(GetCraftingSlotData(i));
   }
 
