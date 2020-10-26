@@ -599,21 +599,19 @@ AddEventHandler("redemrp_inventory:GetLocker", function(id)
         local charid = user.getSessionVar("charid")
         local money = user.getMoney()
         local job = user.getJob()
-		 TriggerEvent('redemrp_db:getCurrentGang', identifier, charid, function(gang_data)
         if id == "private" then
 		if CreatedLockers[id] ~= nil then
-            if CreatedLockers[id].requireJob == job or CreatedLockers[id].requireJob == nil or  CreatedLockers[id].requireJob == gang_data.gang then
+            if CreatedLockers[id].requireJob == job or CreatedLockers[id].requireJob == nil then
                 TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  PrepareToOutput(Locker[identifier .. "_" .. charid]) , money , InventoryWeight[identifier .. "_" .. charid], true)
             end
 		else
 		                TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  PrepareToOutput(Locker[identifier .. "_" .. charid]) , money , InventoryWeight[identifier .. "_" .. charid], true)
 		end
         else
-            if CreatedLockers[id].requireJob == job or CreatedLockers[id].requireJob == nil  or  CreatedLockers[id].requireJob == gang_data.gang then
+            if CreatedLockers[id].requireJob == job or CreatedLockers[id].requireJob == nil  then
                 TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  PrepareToOutput(Locker[id]) , money , InventoryWeight[identifier .. "_" .. charid] , true)
             end
         end
-		end)
     end)
 end)
 
