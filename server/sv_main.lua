@@ -901,11 +901,9 @@ function IterateThroughBlueprints(inputSlots, next)
 
     for bpOutputItem, bp in pairs(Config.Crafting) do
         local bpOutputAmount = bp.amount
-
-        local itSucceeded = true
-
         local bpInputs = bp.items
 
+        local itSucceeded = true
         local multiplier
 
         for i = 1, 9 do
