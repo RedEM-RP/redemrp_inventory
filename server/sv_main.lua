@@ -846,77 +846,184 @@ RegisterServerEvent("redemrp_inventory:craft")
 AddEventHandler("redemrp_inventory:craft", function(data , type)
     local _source = source
     local _type = type
-    local itemtoCraft
-    local table_value =  {}
-    for v,k in pairs(data) do
-        if  k[1] ~= "empty" then
-            table.insert(table_value, k[2])
-        end
-    end
-	if table_value[1] then
-    local arraymin = math.min(table.unpack(table_value))
 
-    for outputItem, craftingData in pairs(Config.Crafting) do
-        local collision = true
+    local outputItem, outputItemAmount = CheckForSingleBlueprintCollision(data)
 
-        local cItems = craftingData.items
-
-        for i = 1, 9 do
-            local dataAtSlot = data[i]
-            local itemAtSlot = dataAtSlot[1]
-            local amountAtSlot = dataAtSlot[2]
-
-            local cInput = cItems[i]
-
-            local cItem, cAmount = string.match(cInput, '(%a+)%s*,%s*(%d+)')
-            cItem = cItem or cInput
-
-            if cItem then
-                if itemAtSlot ~= cItem or (cAmount ~= nil and amountAtSlot ~= tonumber(cAmount)) then
-                    collision = false
-                    break
-                end
-            end
-        end
-
-        if collision then
-            itemtoCraft = outputItem
-            break
-        end
+    if not outputItem then
+        outputItem, outputItemAmount = CheckForSingleBlueprintMultipleCollisions(data)
     end
 
-    if itemtoCraft ~= nil then
-        local  CraftData = Config.Crafting[itemtoCraft]
+    if outputItem then
+        local CraftData = Config.Crafting[outputItem]
         if CraftData.type == _type or CraftData.type == "empty" then
             TriggerEvent('redemrp:getPlayerFromId', _source, function(user)
                 local job = user.getJob()
                 if CraftData.requireJob == job or CraftData.requireJob == "empty"  then
+                    local bpInputs = CraftData.items
+
                     for v,k in pairs(data) do
-                        if  k[1] ~= "empty" and k[1] ~= "WEAPON_MELEE_KNIFE" then
-                            local itemData1 = SharedInventoryFunctions.getItem(_source, k[1])
-                            itemData1.RemoveItem(arraymin)
+
+                        local inputItem = k[1]
+
+                        if  inputItem ~= "empty" and inputItem ~= "WEAPON_MELEE_KNIFE" then
+                            local bpInput = bpInputs[v]
+                            local _, bpInputAmount = string.match(bpInput, '(%a+)%s*,%s*(%d+)')
+
+                            bpInputAmount = tonumber(bpInputAmount) or 1
+
+                            local itemData1 = SharedInventoryFunctions.getItem(_source, inputItem)
+                            itemData1.RemoveItem(bpInputAmount * outputItemAmount)
                         end
                     end
 					local itemData2
-					if itemtoCraft == "flask_clean" then
+					if outputItem == "flask_clean" then
 						local meta = {}
 						meta.waterlevel =  data.slot_5[3].waterlevel
-						itemData2 = SharedInventoryFunctions.getItem(_source, itemtoCraft , meta)
-					elseif itemtoCraft == "flask" then
+						itemData2 = SharedInventoryFunctions.getItem(_source, outputItem , meta)
+					elseif outputItem == "flask" then
 						local meta = {}
 						meta.waterlevel = 0
-						itemData2 = SharedInventoryFunctions.getItem(_source, itemtoCraft , meta)		
+						itemData2 = SharedInventoryFunctions.getItem(_source, outputItem , meta)		
 					else
-						itemData2 = SharedInventoryFunctions.getItem(_source, itemtoCraft)
-					end
-						itemData2.AddItem(arraymin * CraftData.amount)
+						itemData2 = SharedInventoryFunctions.getItem(_source, outputItem)
+                    end
+                    
+					itemData2.AddItem(outputItemAmount * CraftData.amount)
                 end
             end)
         end
     end
-	end
 end)
 
+function IterateThroughBlueprints(inputSlots, next)
+
+    local collisions = {}
+
+    for bpOutputItem, bp in pairs(Config.Crafting) do
+        local bpOutputAmount = bp.amount
+
+        local itSucceeded = true
+
+        local bpInputs = bp.items
+
+        local multiplier
+
+        for i = 1, 9 do
+            local bpInput = bpInputs[i]
+
+            local bpInputItem, bpInputAmount = string.match(bpInput, '(%a+)%s*,%s*(%d+)')
+            bpInputItem = bpInputItem or bpInput
+            bpInputAmount = tonumber(bpInputAmount) or 1
+
+            if bpInputItem == 'empty' then
+                bpInputAmount = 0
+            end
+
+            local input = inputSlots[i]
+            local inputItem = input[1]
+            local inputAmount = input[2]
+
+            local continue, mult = next(multiplier, bpInputItem, bpInputAmount, inputItem, inputAmount)
+            multiplier = mult
+
+            if not continue then
+                itSucceeded = false
+                break
+            end
+        end
+
+        if itSucceeded then
+            table.insert(collisions, {bpOutputItem, bpOutputAmount, multiplier or 1.0})
+        end
+    end
+
+    local retItem
+    local retAmount 
+
+    local numCollisions = #collisions
+
+    if numCollisions == 1 then
+
+        local col = collisions[1]
+
+        retItem = col[1]
+        retAmount = col[2] * col[3]
+
+    elseif numCollisions > 1 then
+
+        local chosenCollision
+        local highestMultiplier = 0
+
+        for _, col in ipairs(collisions) do
+
+            local mult = col[3]
+
+            if mult > highestMultiplier then
+                chosenCollision = col
+                highestMultiplier = mult
+            end
+        end
+
+        if chosenCollision then
+            retItem = chosenCollision[1]
+            retAmount = chosenCollision[2] * chosenCollision[3]
+        end
+    end
+
+    return retItem, retAmount
+end
+
+function CheckForSingleBlueprintCollision(inputSlots)
+    local insert = table.insert
+
+    local t = {}
+    for i, d in pairs(inputSlots) do 
+        if d[1] ~= 'empty' then
+            insert(t, d[2])
+         end
+    end
+
+    local lowestInputAmount = math.min(table.unpack(t))
+
+    next = function(_, bpInputItem, bpInputAmount, inputItem, inputAmount)
+
+        if inputItem ~= bpInputItem then
+            return false
+        end
+
+        if inputAmount ~= bpInputAmount and inputAmount ~= (bpInputAmount * lowestInputAmount) then
+            return false
+        end
+
+        return true, lowestInputAmount
+    end
+
+    return IterateThroughBlueprints(inputSlots, next)
+end
+
+function CheckForSingleBlueprintMultipleCollisions(inputSlots)
+    next = function(mult, bpInputItem, bpInputAmount, inputItem, inputAmount)
+
+        if inputItem ~= bpInputItem then
+            return false
+        end
+
+        if inputAmount ~= bpInputAmount and (bpInputAmount ~= 0 and inputAmount % bpInputAmount ~= 0) then
+            return false
+        end
+
+        if inputItem ~= 'empty' and bpInputAmount ~= 0 then
+            local _  = inputAmount / bpInputAmount
+            if mult == nil or _ < mult then
+                mult = _
+            end
+        end
+
+        return true, mult
+    end
+
+    return IterateThroughBlueprints(inputSlots, next)
+end
 
 
 
