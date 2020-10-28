@@ -861,13 +861,15 @@ AddEventHandler("redemrp_inventory:craft", function(data , type)
                 if CraftData.requireJob == job or CraftData.requireJob == "empty"  then
                     local bpInputs = CraftData.items
 
+                    local strmatch = string.match
+
                     for v,k in pairs(data) do
 
                         local inputItem = k[1]
 
                         if  inputItem ~= "empty" and inputItem ~= "WEAPON_MELEE_KNIFE" then
                             local bpInput = bpInputs[v]
-                            local _, bpInputAmount = string.match(bpInput, '(%a+)%s*,%s*(%d+)')
+                            local _, bpInputAmount = strmatch(bpInput, '(%a+)%s*,%s*(%d+)')
 
                             bpInputAmount = tonumber(bpInputAmount) or 1
 
@@ -899,6 +901,8 @@ function IterateThroughBlueprints(inputSlots, next)
 
     local collisions = {}
 
+    local strmatch = string.match
+
     for bpOutputItem, bp in pairs(Config.Crafting) do
         local bpOutputAmount = bp.amount
         local bpInputs = bp.items
@@ -909,7 +913,7 @@ function IterateThroughBlueprints(inputSlots, next)
         for i = 1, 9 do
             local bpInput = bpInputs[i]
 
-            local bpInputItem, bpInputAmount = string.match(bpInput, '(%a+)%s*,%s*(%d+)')
+            local bpInputItem, bpInputAmount = strmatch(bpInput, '(%a+)%s*,%s*(%d+)')
             bpInputItem = bpInputItem or bpInput
             bpInputAmount = tonumber(bpInputAmount) or 1
 
@@ -975,7 +979,7 @@ function CheckForSingleBlueprintCollision(inputSlots)
     local insert = table.insert
 
     local t = {}
-    for i, d in pairs(inputSlots) do 
+    for _, d in ipairs(inputSlots) do 
         if d[1] ~= 'empty' then
             insert(t, d[2])
          end
