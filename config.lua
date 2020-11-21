@@ -10,7 +10,7 @@ Config.Crafting = {
 
 items = {
 		"empty","empty","empty",
-		"wheat","wheat","wheat",
+		"wheat","wheat, 2","wheat",
 		"empty","empty","empty"
 		},
 requireJob = "empty",
