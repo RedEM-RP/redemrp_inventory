@@ -727,7 +727,7 @@ grids[1].sort('amount:desc',{layout: 'instant'});
 
 
 $(document).keyup(function(e) {
- if (e.keyCode == 27 || e.keyCode == 66) { //hide eq
+ if (e.keyCode == 27 || e.keyCode == 66 || e.keyCode == 8) { //hide eq
 
   hide();
   $.post('http:/redemrp_inventory/close');
