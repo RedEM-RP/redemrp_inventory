@@ -984,7 +984,11 @@ function CheckForSingleBlueprintCollision(inputSlots)
             insert(t, d[2])
          end
     end
-
+	
+    if t[1] == nil then
+	return false
+    end
+	
     local lowestInputAmount = math.min(table.unpack(t))
 
     next = function(_, bpInputItem, bpInputAmount, inputItem, inputAmount)
