@@ -742,6 +742,17 @@ local output = {}
 return output
 end
 
+function SharedInventoryFunctions.removePlayerInventory(_source)
+    TriggerEvent('redemrp:getPlayerFromId', _source, function(user)
+        local identifier = user.getIdentifier()
+        local charid = user.getSessionVar("charid")
+        local money = user.getMoney()
+        Inventory[identifier .. "_" .. charid] = {}
+        InventoryWeight[identifier .. "_" .. charid] = 0.0
+        TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) , {}, money , InventoryWeight[identifier .. "_" .. charid])
+    end)
+end
+
 function SharedInventoryFunctions.getItem(_source, name , meta)
     local data = {}
     if name ~= nil then
