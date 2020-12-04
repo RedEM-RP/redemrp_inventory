@@ -88,9 +88,25 @@ data.updateCraftings(-1)
 ========================
 
 local playerInventory = data.getPlayerInventory(source) --- return player items
+data.removePlayerInventory(source) -- remove player inventory
 TriggerEvent("redemrp_inventory:SearchPlayer", target) -- search player
 ```
+Basic Example for lockers and crafting stations:
 
+```
+data.CreateCraftingStation("doctor_1", -290.01, 816.25, 118.39, "doctor" , "doctor")
+data.CreateCraftingStation("doctor_2", 1362.1,-1301.91,77.76, "doctor" , "doctor")
+data.CreateCraftingStation("doctor_3", -1805.77,-428.35,158.83, "doctor" , "doctor")
+data.CreateCraftingStation("doctor_4", -833.24,-1186.80,43.89, "doctor" , "doctor")
+
+MySQL.ready(function()
+data.createLocker("doctor_1" , -284.97, 810.51 ,119.39, "doctor")
+data.createLocker("doctor_2" , -1361.28,-1306.01,77.76, "doctor")
+data.createLocker("doctor_3" , -1802.88,-432.84,158.83, "doctor")
+data.createLocker("doctor_4" , -833.24,-1186.80,43.89, "doctor")
+end)
+
+```
 
 ![alt text](https://i.imgur.com/ivrqvgt.png)
 
