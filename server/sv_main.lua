@@ -406,40 +406,65 @@ end)
 
 
 
-local AllMeta = {
-"uid",
-"fishweight",
-"waterlevel",
-}
+function is_table_equal(_t1,_t2,ignore_mt)
+   local ty1 = type(_t1)
+   local ty2 = type(_t2)
+   local t1 = _t1
+   local t2 = _t2
+   if ty1 ~= 'table' then t1 = tostring(_t1) ty1 = type(t1) end
+   if ty2 ~= 'table' then t2 = tostring(_t2) ty2 = type(t2) end
+   if ty1 ~= ty2 then return false end
+   -- non-table types can be directly compared
+   if ty1 ~= 'table' and ty2 ~= 'table' then return t1 == t2 end
+   -- as well as tables which have the metamethod __eq
+   local mt = getmetatable(t1)
+   if not ignore_mt and mt and mt.__eq then return t1 == t2 end
+   for k1,v1 in pairs(t1) do
+      local v2 = t2[k1]
+      if v2 == nil or not is_table_equal(v1,v2) then return false end
+   end
+   for k2,v2 in pairs(t2) do
+      local v1 = t1[k2]
+      if v1 == nil or not is_table_equal(v1,v2) then return false end
+   end
+   return true
+end
+ 
 
 function getInventoryItemFromName(name, items_table , meta)
-    local check = false
     for i,k in pairs(items_table) do
-	
-        for j,l in pairs(AllMeta) do
-            if meta[l] ~= nil then
-                check = true		
-                break
-            end
-        end
-		
-        if not check then
-            if name == k.getName() then
-                return items_table[i] , i
-            end
-        else
-		
-            for j,l in pairs(AllMeta) do
-                if meta[l] ~= nil then				
-                    if name == k.getName() and tostring(meta[l]) == tostring(k.getMeta()[l])  then
-                        return items_table[i] , i
-                    end
+        if meta ~= "empty" then
+            if next(meta) == nil then
+                if name == k.getName() then
+                    return items_table[i] , i
+                end
+            else
+              if name == k.getName() then
+                  if is_table_equal(meta, k.getMeta()) then
+                     return items_table[i] , i
+                   end
                 end
             end
-			
+        else
+            if name == k.getName() and next(k.getMeta()) == nil then
+                return items_table[i] , i
+            end
         end
     end
     return false, false
+end
+
+
+function getMetaOutput(m)
+if m == "empty" then
+  return m
+else 
+   local meta = m or {}
+    if next(meta) == nil then
+	meta = "empty"
+    end
+    return meta
+end
 end
 
 
@@ -457,7 +482,7 @@ function addItem (name, amount ,meta , identifier , charid , lvl )
             local generetedUid = string.format("%03d%04d", numBase0, numBase1)
             _meta.uid = generetedUid
         end
-        local item , id = getInventoryItemFromName(_name, player_inventory ,_meta)
+        local item , id = getInventoryItemFromName(_name, player_inventory ,getMetaOutput(meta))
         if itemData.requireLvl <= lvl then
             if not item then
                 if itemData.type == "item_standard" then
@@ -501,7 +526,7 @@ function removeItem (name, amount, meta, identifier , charid)
     if _amount >=0 then
         local itemData = Config.Items[_name]
         local player_inventory =  Inventory[identifier .. "_" .. charid]
-        local item , id = getInventoryItemFromName(_name, player_inventory ,_meta)
+        local item , id = getInventoryItemFromName(_name, player_inventory ,getMetaOutput(meta))
         if item then
             if itemData.type == "item_standard" then
 			  if _amount > 0 then
@@ -531,7 +556,7 @@ function addItemLocker (name, amount ,meta, lockerId)
     if _amount >=0 then
         local itemData = Config.Items[_name]
         local player_locker =  Locker[lockerId]
-        local item , id = getInventoryItemFromName(_name, player_locker ,_meta)
+        local item , id = getInventoryItemFromName(_name, player_locker ,getMetaOutput(meta))
         if not item then
 
             if itemData.type == "item_standard" then
@@ -570,7 +595,7 @@ function removeItemLocker ( name, amount,meta, lockerId)
     if _amount >=0 then
         local itemData = Config.Items[_name]
         local player_locker =  Locker[lockerId]
-        local item , id = getInventoryItemFromName(_name, player_locker ,_meta)
+        local item , id = getInventoryItemFromName(_name, player_locker ,getMetaOutput(meta))
         if item then
             if itemData.type == "item_standard" then
 			  if _amount >0 then
@@ -801,7 +826,7 @@ function SharedInventoryFunctions.getItem(_source, name , meta)
                 end
                 function data.RemoveItem(amount)
                     local output = false
-                    output =  removeItem(name, amount, meta, identifier , charid)
+                    output =  removeItem(name, amount, data.ItemMeta, identifier , charid)
                     if output then
                         TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  {}, money , InventoryWeight[identifier .. "_" .. charid])
 						 if data.ItemInfo.type == "item_weapon" then
