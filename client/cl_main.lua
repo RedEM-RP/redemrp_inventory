@@ -195,6 +195,11 @@ AddEventHandler("redem:addMoney", function(_money)
     PlayerMoney = _money
 end)
 
+RegisterNetEvent("redemrp:activateMoney")
+AddEventHandler("redemrp:activateMoney", function(_money)
+    PlayerMoney = _money
+end)
+
 RegisterNUICallback('additem', function(data)
     TriggerServerEvent("redemrp_inventory:update", "add", data.data , data.target ,LockerZone)
 end)
