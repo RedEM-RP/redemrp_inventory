@@ -150,10 +150,9 @@ AddEventHandler("redemrp_inventory:SaveAmmo", function()
         end
 end)
 RegisterNetEvent("redemrp_inventory:SendItems")
-AddEventHandler("redemrp_inventory:SendItems", function(data, data2, money, weight , other , target)
+AddEventHandler("redemrp_inventory:SendItems", function(data, data2, weight , other , target)
     InventoryItems  = data
     OtherItems  = data2
-    PlayerMoney = money
     InventoryWeight = weight
     local _target = 0
     local crafting = true
@@ -189,6 +188,11 @@ AddEventHandler("redemrp_inventory:SendItems", function(data, data2, money, weig
         })
         SetNuiFocus(true, true)
     end
+end)
+
+RegisterNetEvent("redem:addMoney")
+AddEventHandler("redem:addMoney", function(_money)
+    PlayerMoney = _money
 end)
 
 RegisterNUICallback('additem', function(data)

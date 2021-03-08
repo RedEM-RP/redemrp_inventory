@@ -14,7 +14,6 @@ AddEventHandler("redemrp:playerLoaded", function(source, user)
     local _source = source
         local identifier = user.getIdentifier()
         local charid = user.getSessionVar("charid")
-        local money = user.getMoney()
 		local job = user.getJob()
         TriggerClientEvent("redemrp_inventory:SendLockers", _source, CreatedLockers)
 		TriggerClientEvent("redemrp_inventory:SendCraftings", _source, CreatedCraftings, job)
@@ -53,7 +52,7 @@ AddEventHandler("redemrp:playerLoaded", function(source, user)
                     }, function(rowsChanged)
                     end)
                 end
-                TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  {} , money , InventoryWeight[identifier .. "_" .. charid])
+                TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  {} , InventoryWeight[identifier .. "_" .. charid])
             end)
         end)
 end)
@@ -67,7 +66,6 @@ AddEventHandler("redemrp_inventory:update", function(_type ,data , target, Locke
     TriggerEvent('redemrp:getPlayerFromId', _source, function(user)
         local identifier = user.getIdentifier()
         local charid = user.getSessionVar("charid")
-        local money = user.getMoney()
         local lvl = user.getLevel()
         if _target == 0 then
             if _type == "delete" then
@@ -97,15 +95,14 @@ AddEventHandler("redemrp_inventory:update", function(_type ,data , target, Locke
                 end
             end
             if LockerID == "private" then
-                TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  PrepareToOutput(Locker[identifier .. "_" .. charid]) , money , InventoryWeight[identifier .. "_" .. charid] , true)
+                TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  PrepareToOutput(Locker[identifier .. "_" .. charid]) , InventoryWeight[identifier .. "_" .. charid] , true)
             else
-                TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  PrepareToOutput(Locker[LockerID]) , money , InventoryWeight[identifier .. "_" .. charid] , true)
+                TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  PrepareToOutput(Locker[LockerID]) , InventoryWeight[identifier .. "_" .. charid] , true)
             end
         else
             TriggerEvent('redemrp:getPlayerFromId', _target, function(user2)
                 local identifier_target = user2.getIdentifier()
                 local charid_target = user2.getSessionVar("charid")
-                local money_target = user2.getMoney()
                 local lvl_target = user.getLevel()
                 if _type == "delete" then
                     if removeItem(data.name, data.amount, data.meta, identifier , charid) then
@@ -128,8 +125,8 @@ AddEventHandler("redemrp_inventory:update", function(_type ,data , target, Locke
                         end
                     end
                 end
-                TriggerClientEvent("redemrp_inventory:SendItems", _target, PrepareToOutput(Inventory[identifier_target .. "_" .. charid_target]) ,  {} , money_target , InventoryWeight[identifier_target .. "_" .. charid_target])
-                TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  PrepareToOutput(Inventory[identifier_target .. "_" .. charid_target]) , money , InventoryWeight[identifier .. "_" .. charid], true , _target)
+                TriggerClientEvent("redemrp_inventory:SendItems", _target, PrepareToOutput(Inventory[identifier_target .. "_" .. charid_target]) ,  {} , InventoryWeight[identifier_target .. "_" .. charid_target])
+                TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  PrepareToOutput(Inventory[identifier_target .. "_" .. charid_target]) , InventoryWeight[identifier .. "_" .. charid], true , _target)
 
             end)
         end
@@ -299,9 +296,8 @@ AddEventHandler("redemrp_inventory:drop", function(data)
         TriggerEvent('redemrp:getPlayerFromId', _source, function(user)
             local identifier = user.getIdentifier()
             local charid = user.getSessionVar("charid")
-            local money = user.getMoney()
             removeItem(data.name, data.amount, data.meta, identifier , charid)
-            TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  {} , money , InventoryWeight[identifier .. "_" .. charid])
+            TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  {}, InventoryWeight[identifier .. "_" .. charid])
             TriggerClientEvent("redemrp_inventory:CreatePickup", _source, data.name , data.amount, data.meta , itemData.label, itemData.imgsrc)
             if itemData.type == "item_weapon" then
                 TriggerClientEvent("redemrp_inventory:removeWeapon", _source, itemData.weaponHash)
@@ -332,10 +328,9 @@ AddEventHandler("redemrp_inventory:onPickup", function(id)
     TriggerEvent('redemrp:getPlayerFromId', _source, function(user)
         local identifier = user.getIdentifier()
         local charid = user.getSessionVar("charid")
-        local money = user.getMoney()
         local lvl = user.getLevel()
         if addItem(DroppedItems[id].name ,DroppedItems[id].amount, DroppedItems[id].meta, identifier , charid , lvl) then
-            TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  {} , money , InventoryWeight[identifier .. "_" .. charid])
+            TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  {} , InventoryWeight[identifier .. "_" .. charid])
             TriggerClientEvent('redemrp_inventory:removePickup', -1, id)
             TriggerClientEvent('redemrp_inventory:PickupAnim', _source)
             TriggerClientEvent("pNotify:SendNotification", _source, {
@@ -396,10 +391,9 @@ RegisterCommand('giveitem', function(source, args)
         local identifier = user.getIdentifier()
         local charid = user.getSessionVar("charid")
         local lvl = user.getLevel()
-        local money = user.getMoney()
         if user.getGroup() == 'superadmin' and _source ~= 0 then
             addItem(args[1], tonumber(args[2]) ,{} , identifier , charid ,lvl )
-            TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  {} , money , InventoryWeight[identifier .. "_" .. charid])
+            TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  {} , InventoryWeight[identifier .. "_" .. charid])
         end
     end)
 end)
@@ -622,19 +616,18 @@ AddEventHandler("redemrp_inventory:GetLocker", function(id)
     TriggerEvent('redemrp:getPlayerFromId', _source, function(user)
         local identifier = user.getIdentifier()
         local charid = user.getSessionVar("charid")
-        local money = user.getMoney()
         local job = user.getJob()
         if id == "private" then
 		if CreatedLockers[id] ~= nil then
             if CreatedLockers[id].requireJob == job or CreatedLockers[id].requireJob == nil then
-                TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  PrepareToOutput(Locker[identifier .. "_" .. charid]) , money , InventoryWeight[identifier .. "_" .. charid], true)
+                TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  PrepareToOutput(Locker[identifier .. "_" .. charid]) , InventoryWeight[identifier .. "_" .. charid], true)
             end
 		else
-		                TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  PrepareToOutput(Locker[identifier .. "_" .. charid]) , money , InventoryWeight[identifier .. "_" .. charid], true)
+		                TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  PrepareToOutput(Locker[identifier .. "_" .. charid]) , InventoryWeight[identifier .. "_" .. charid], true)
 		end
         else
             if CreatedLockers[id].requireJob == job or CreatedLockers[id].requireJob == nil  then
-                TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  PrepareToOutput(Locker[id]) , money , InventoryWeight[identifier .. "_" .. charid] , true)
+                TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  PrepareToOutput(Locker[id]) , InventoryWeight[identifier .. "_" .. charid] , true)
             end
         end
     end)
@@ -648,11 +641,10 @@ AddEventHandler("redemrp_inventory:GetPlayer", function(target)
     TriggerEvent('redemrp:getPlayerFromId', _source, function(user)
         local identifier = user.getIdentifier()
         local charid = user.getSessionVar("charid")
-        local money = user.getMoney()
         TriggerEvent('redemrp:getPlayerFromId', _target, function(user2)
             local identifier_target = user2.getIdentifier()
             local charid_target = user2.getSessionVar("charid")
-            TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  PrepareToOutput(Inventory[identifier_target .. "_" .. charid_target]) , money , InventoryWeight[identifier .. "_" .. charid], true ,_target)
+            TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  PrepareToOutput(Inventory[identifier_target .. "_" .. charid_target]) , InventoryWeight[identifier .. "_" .. charid], true ,_target)
         end)
     end)
 end)
@@ -771,10 +763,9 @@ function SharedInventoryFunctions.removePlayerInventory(_source)
     TriggerEvent('redemrp:getPlayerFromId', _source, function(user)
         local identifier = user.getIdentifier()
         local charid = user.getSessionVar("charid")
-        local money = user.getMoney()
         Inventory[identifier .. "_" .. charid] = {}
         InventoryWeight[identifier .. "_" .. charid] = 0.0
-        TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) , {}, money , InventoryWeight[identifier .. "_" .. charid])
+        TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) , {}, InventoryWeight[identifier .. "_" .. charid])
     end)
 end
 
@@ -786,7 +777,6 @@ function SharedInventoryFunctions.getItem(_source, name , meta)
             local charid = user.getSessionVar("charid")
             local player_inventory =  Inventory[identifier .. "_" .. charid]
             local lvl = user.getLevel()
-            local money = user.getMoney()
             local item , id = getInventoryItemFromName(name, player_inventory , meta or {})
 			
             if item then
@@ -795,7 +785,7 @@ function SharedInventoryFunctions.getItem(_source, name , meta)
                 data.ItemAmount = item.getAmount()
                 function data.ChangeMeta(m)
                   item.setMeta(m)
-				  TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  {} , money , InventoryWeight[identifier .. "_" .. charid])
+				  TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  {} , InventoryWeight[identifier .. "_" .. charid])
                 end
                 function data.AddItem(amount)
                     local output = false
@@ -820,7 +810,7 @@ function SharedInventoryFunctions.getItem(_source, name , meta)
 						end
 					end
                     if output then
-                        TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  {} , money , InventoryWeight[identifier .. "_" .. charid])
+                        TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  {} , InventoryWeight[identifier .. "_" .. charid])
                     end
                     return output
                 end
@@ -828,7 +818,7 @@ function SharedInventoryFunctions.getItem(_source, name , meta)
                     local output = false
                     output =  removeItem(name, amount, data.ItemMeta, identifier , charid)
                     if output then
-                        TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  {}, money , InventoryWeight[identifier .. "_" .. charid])
+                        TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  {}, InventoryWeight[identifier .. "_" .. charid])
 						 if data.ItemInfo.type == "item_weapon" then
 							TriggerClientEvent("redemrp_inventory:removeWeapon", _source, data.ItemInfo.weaponHash) 
 						 end
@@ -863,7 +853,7 @@ function SharedInventoryFunctions.getItem(_source, name , meta)
                         end
                     end
                     if output then
-                        TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  {} , money , InventoryWeight[identifier .. "_" .. charid])
+                        TriggerClientEvent("redemrp_inventory:SendItems", _source, PrepareToOutput(Inventory[identifier .. "_" .. charid]) ,  {}, InventoryWeight[identifier .. "_" .. charid])
                     end
                     return output
                 end
