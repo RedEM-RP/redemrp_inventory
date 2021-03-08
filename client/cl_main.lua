@@ -195,8 +195,8 @@ AddEventHandler("redem:addMoney", function(_money)
     PlayerMoney = _money
 end)
 
-RegisterNetEvent("redemrp:activateMoney")
-AddEventHandler("redemrp:activateMoney", function(_money)
+RegisterNetEvent("redem:activateMoney")
+AddEventHandler("redem:activateMoney", function(_money)
     PlayerMoney = _money
 end)
 
