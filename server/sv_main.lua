@@ -182,37 +182,43 @@ AddEventHandler("redemrp:playerDropped", function(_player)
 end)
 
 
-AddEventHandler('onResourceStop', function(resourceName)
-    if (GetCurrentResourceName() ~= resourceName) then
-        return
-    end
-    print('The resource ' .. resourceName .. ' was stopped.')
-    for j,l in pairs(Locker) do
-        local player_locker  = l
-        local identifier = j:sub(1, -3)
-        local charid = j:sub(#j ,#j)
-        if "number" ~= type(charid) and string.len(j) ~= 23 then
-            identifier = j
-            charid = 0
+AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
+    if eventData.secondsRemaining == 60 then
+        CreateThread(function()
+            Wait(45000)
+            print("15 seconds before restart... saving all players!")
+			for j, l in pairs(Locker) do
+				local player_locker = l
+				local identifier = j:sub(1, -3)
+				local charid = j:sub(#j, #j)
+				if "number" ~= type(charid) and string.len(j) ~= 23 then
+					identifier = j
+					charid = 0
 
-            local ToSaveLocker = {}
-            if player_locker[1] ~= nil then
-                for i,k in pairs(player_locker) do
-                   table.insert(ToSaveLocker ,{name = k.getName(), amount = k.getAmount(), meta = k.getMeta()})
-                end
-            end
-            local JsonItemsLocker = json.encode(ToSaveLocker)
+					local ToSaveLocker = {}
+					if player_locker[1] ~= nil then
+						for i, k in pairs(player_locker) do
+							table.insert(ToSaveLocker, {
+								name = k.getName(),
+								amount = k.getAmount(),
+								meta = k.getMeta()
+							})
+						end
+					end
+					local JsonItemsLocker = json.encode(ToSaveLocker)
 
-            MySQL.Async.execute('UPDATE user_locker SET items = @items WHERE identifier = @identifier AND charid = @charid', {
-                ['@identifier']  = identifier,
-                ['@charid']  = charid,
-                ['@items'] = JsonItemsLocker
-            }, function (rowsChanged)
-            end)
-        end
+					MySQL.Async.execute(
+						'UPDATE user_locker SET items = @items WHERE identifier = @identifier AND charid = @charid', {
+							['@identifier'] = identifier,
+							['@charid'] = charid,
+							['@items'] = JsonItemsLocker
+						}, function(rowsChanged)
+						end)
+				end
+			end
+        end)
     end
 end)
-
 
 
  function savePlayerInventory()
