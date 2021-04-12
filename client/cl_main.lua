@@ -421,6 +421,7 @@ Citizen.CreateThread(function()
         if CreatedLockers ~= nil then
 
             for k,v in pairs(CreatedLockers) do
+              if v.coords.x ~= "empty" and v.coords ~= nil then
                 local distance = Vdist(coords, v.coords.x, v.coords.y, v.coords.z)
 
                 if distance <= 15.0 then
@@ -455,7 +456,7 @@ Citizen.CreateThread(function()
                     end
                 end
             end
-
+           end
         end
 
         if can_wait == true then
