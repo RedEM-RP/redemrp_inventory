@@ -437,7 +437,7 @@ Citizen.CreateThread(function()
                     Citizen.InvokeNative(0xE9990552DEC71600)
                 end
 
-                if distance > 2 and k == LockerZone then
+                if distance > 2 and k == LockerZone and not tempLocker then
                     local blank = Citizen.InvokeNative(0xFA925AC00EB830B9, 10, "LITERAL_STRING", " ", Citizen.ResultAsLong())
                     Citizen.InvokeNative(0xFA233F8FE190514C, blank)
                     Citizen.InvokeNative(0xE9990552DEC71600)
