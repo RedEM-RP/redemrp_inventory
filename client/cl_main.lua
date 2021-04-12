@@ -11,6 +11,7 @@ local UsedWeapons = {}
 local CreatedCraftings = lock
 local PlayerJob = job
 local CurrentCraftingType = "empty"
+local tempLocker = false
 
 local WeaponsWithoutAmmo = {
 	["WEAPON_FISHINGROD"] = true,
@@ -66,7 +67,8 @@ Citizen.CreateThread(function()
                     SetNuiFocus(false, false)
                     isOtherOpen = false
                     LockerZone = nil
-					CurrentCraftingType = "empty"
+		    tempLocker = false
+		    CurrentCraftingType = "empty"
                 end
             end
         end
@@ -375,8 +377,9 @@ AddEventHandler('redemrp_inventory:OpenPrivateLocker', function()
 end)
 
 RegisterNetEvent('redemrp_inventory:OpenLocker')
-AddEventHandler('redemrp_inventory:OpenLocker', function(id)
+AddEventHandler('redemrp_inventory:OpenLocker', function(id, _tempLocker)
     LockerZone = id
+    tempLocker = _tempLocker 
     TriggerServerEvent("redemrp_inventory:GetLocker", LockerZone)
 end)
 
@@ -547,4 +550,5 @@ RegisterNUICallback('close', function()
     isInventoryOpen = false
     isOtherOpen = false
     LockerZone = nil
+    tempLocker = false
 end)
