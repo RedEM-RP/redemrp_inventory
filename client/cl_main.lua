@@ -374,6 +374,12 @@ AddEventHandler('redemrp_inventory:OpenPrivateLocker', function()
      TriggerServerEvent("redemrp_inventory:GetLocker", LockerZone)
 end)
 
+RegisterNetEvent('redemrp_inventory:OpenLocker')
+AddEventHandler('redemrp_inventory:OpenLocker', function(id)
+    LockerZone = id
+    TriggerServerEvent("redemrp_inventory:GetLocker", LockerZone)
+end)
+
 --==================== D R O P =======================================
 
 
