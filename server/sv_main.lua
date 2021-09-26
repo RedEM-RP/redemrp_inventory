@@ -783,7 +783,7 @@ function SharedInventoryFunctions.getItem(_source, name , meta)
             local charid = user.getSessionVar("charid")
             local player_inventory =  Inventory[identifier .. "_" .. charid]
             local lvl = user.getLevel()
-            local item , id = getInventoryItemFromName(name, player_inventory , meta or {})
+            local item , id = getInventoryItemFromName(name, player_inventory , meta or "empty")
 			
             if item then
                 data.ItemInfo = item.getData()
