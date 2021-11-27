@@ -63,6 +63,10 @@ AddEventHandler("redemrp_inventory:update", function(_type ,data , target, Locke
     local _source = source
     local _target = target
     local itemData = Config.Items[data.name]
+    if not itemData then
+		print(data.name.. " this item not registered on config.lua")
+		return
+	end
     TriggerEvent('redemrp:getPlayerFromId', _source, function(user)
         local identifier = user.getIdentifier()
         local charid = user.getSessionVar("charid")
@@ -297,7 +301,11 @@ savePlayerInventory()
 RegisterServerEvent("redemrp_inventory:drop")
 AddEventHandler("redemrp_inventory:drop", function(data)
     local _source = source
-    local itemData = Config.Items[data.name]
+    local itemData = Config.Items[data.name]    
+    if not itemData then
+		print(data.name.. " this item not registered on config.lua")
+		return
+	end
     if itemData.canBeDropped then
         TriggerEvent('redemrp:getPlayerFromId', _source, function(user)
             local identifier = user.getIdentifier()
@@ -363,6 +371,10 @@ RegisterServerEvent("redemrp_inventory:use")
 AddEventHandler("redemrp_inventory:use", function(data)
     local _source = source
     local itemData = Config.Items[data.name]
+    if not itemData then
+		print(data.name.. " this item not registered on config.lua")
+		return
+	end
     if itemData.canBeUsed then
         TriggerEvent("RegisterUsableItem:"..data.name, _source)
         TriggerClientEvent("ak_notification:Left", _source, "Użyto przedmiotu" , itemData.label, tonumber(1000))
@@ -475,6 +487,10 @@ function addItem (name, amount ,meta , identifier , charid , lvl )
     local output = false
     if _amount >=0 then
         local itemData = Config.Items[_name]
+    if not itemData then
+		print(_name.. " this item not registered on config.lua")
+		return
+	end
         local player_inventory =  Inventory[identifier .. "_" .. charid]
         if not _meta.uid and itemData.type == "item_weapon" then
             local numBase0 = math.random(100,999)
@@ -525,6 +541,10 @@ function removeItem (name, amount, meta, identifier , charid)
     local output = false
     if _amount >=0 then
         local itemData = Config.Items[_name]
+        if not itemData then
+            print(_name.. " this item not registered on config.lua")
+            return
+        end
         local player_inventory =  Inventory[identifier .. "_" .. charid]
         local item , id = getInventoryItemFromName(_name, player_inventory ,getMetaOutput(meta))
         if item then
@@ -555,6 +575,10 @@ function addItemLocker (name, amount ,meta, lockerId)
     local _meta = meta or {}
     if _amount >=0 then
         local itemData = Config.Items[_name]
+        if not itemData then
+            print(_name.. " this item not registered on config.lua")
+            return
+        end
         local player_locker =  Locker[lockerId]
         local item , id = getInventoryItemFromName(_name, player_locker ,getMetaOutput(meta))
         if not item then
@@ -594,6 +618,10 @@ function removeItemLocker ( name, amount,meta, lockerId)
     local output = false
     if _amount >=0 then
         local itemData = Config.Items[_name]
+        if not itemData then
+            print(_name.. " this item not registered on config.lua")
+            return
+        end
         local player_locker =  Locker[lockerId]
         local item , id = getInventoryItemFromName(_name, player_locker ,getMetaOutput(meta))
         if item then
@@ -833,6 +861,10 @@ function SharedInventoryFunctions.getItem(_source, name , meta)
                 end
             else
                 data.ItemInfo = Config.Items[name]
+                if not itemData then
+                    print(name.. " this item not registered on config.lua")
+                    return
+                end
                 data.ItemMeta = {}
                 data.ItemAmount = 0
                  function data.AddItem(amount)
