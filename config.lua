@@ -527,7 +527,7 @@ Config.Items = {
 		canBeDropped = true,
 		requireLvl = 14,
 		weaponHash = GetHashKey("WEAPON_RIFLE_VARMINT"),
-		  imgsrc = "items/WEAPON_REPEATER_HENRY.png",
+		  imgsrc = "items/WEAPON_RIFLE_VARMINT.png",
 		type = "item_weapon"
 	},
 	
