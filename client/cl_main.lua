@@ -28,7 +28,7 @@ Citizen.CreateThread(function()
     TriggerServerEvent("redemrp_inventory:playerJoined")
     while true do
         Wait(1)
-        if IsControlJustReleased(0, 0x4CC0E2FE) then
+        if IsDisabledControlJustReleased(0, 0x4CC0E2FE) then
             if LockerZone then
                 TriggerServerEvent("redemrp_inventory:GetLocker", LockerZone)
             else
