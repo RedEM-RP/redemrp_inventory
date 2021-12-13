@@ -861,7 +861,7 @@ function SharedInventoryFunctions.getItem(_source, name , meta)
                 end
             else
                 data.ItemInfo = Config.Items[name]
-                if not itemData then
+                if not data.ItemInfo then
                     print(name.. " this item not registered on config.lua")
                     return
                 end
