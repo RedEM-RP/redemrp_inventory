@@ -192,12 +192,12 @@ end)
 
 RegisterNetEvent("redem:addMoney")
 AddEventHandler("redem:addMoney", function(_money)
-    PlayerMoney = _money
+    PlayerMoney = tonumber(string.format("%.2f",tostring(_money)))
 end)
 
 RegisterNetEvent("redem:activateMoney")
 AddEventHandler("redem:activateMoney", function(_money)
-    PlayerMoney = _money
+    PlayerMoney = tonumber(string.format("%.2f",tostring(_money)))
 end)
 
 RegisterNUICallback('additem', function(data)
