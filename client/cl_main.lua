@@ -549,3 +549,20 @@ RegisterNUICallback('close', function()
     isOtherOpen = false
     LockerZone = nil
 end)
+
+
+function envanterkapatmk()
+	SendNUIMessage({
+		type = 2
+	})
+	SetNuiFocus(false, false)
+	isOtherOpen = false
+	LockerZone = nil
+	CurrentCraftingType = "empty"
+	isInventoryOpen = false
+end
+
+RegisterNetEvent("redemrp_inventory:closeinv")
+AddEventHandler("redemrp_inventory:closeinv", function()
+	envanterkapatmk()
+end)
