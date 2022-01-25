@@ -587,13 +587,17 @@ function GetNumberOfItems(data) {
 }
 
 $( "#craftButton" ).click(function() {
-  const message = [];
-
-  for (i = 4; i <= 12; i++) {
-    message.push(GetCraftingSlotData(i));
-  }
-
-  $.post('http:/redemrp_inventory/craft', JSON.stringify(message));
+  $.post('https:/redemrp_inventory/craft', JSON.stringify({  
+	  slot_1: GetCraftingSlotData(4),
+	  slot_2: GetCraftingSlotData(5),
+	  slot_3: GetCraftingSlotData(6),
+	  slot_4: GetCraftingSlotData(7),
+	  slot_5: GetCraftingSlotData(8),
+	  slot_6: GetCraftingSlotData(9),
+	  slot_7: GetCraftingSlotData(10),
+	  slot_8: GetCraftingSlotData(11),
+	  slot_9: GetCraftingSlotData(12),
+	  }), );
 });
 
 function GetCraftingSlotData(id)
