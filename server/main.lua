@@ -24,7 +24,7 @@ RegisterServerEvent("redemrp_inventory:server:HandsUp", function(toggle)
     HandsUp[_src] = toggle
 end)
 
-RedEM.CreateCallback('redemrp_inventory:server:HasItem', function(source, cb, itemName)
+RedEM.RegisterCallback('redemrp_inventory:server:HasItem', function(source, cb, itemName)
 	local Player = RedEM.GetPlayer(source)
     if Player then
         local Item = SharedInventoryFunctions.getItem(source, itemName)
