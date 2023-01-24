@@ -1,392 +1,56 @@
 <!DOCTYPE HTML>
-<body>
-<script src="js/jquery-1.4.1.min.js" type="text/javascript"></script>
-<script src="js/jquery.jcarousel.pack.js" type="text/javascript"></script>
-<script src="js/jquery-func.js" type="text/javascript"></script>
-<script src="js/listener.js" type="text/javascript"></script>
-  <div class='main'>
-	<div class="inventory">
-	<div class="game">	<div class="money" id="money">16.34$</div> <div class="clock" id="clock">16:34</div></div>
-	<div class="column box2">DROP</div>
-	 <div class="column box3"> USE</div>
-	 <div class="invinfo"><div class="invtext">INVENTORY</div> <div class="invweight" id="weight" >15.0/24KG</div></div>
-   	 <div class="scroll">
-    <div class="column box1"> </div> 
-	</div> 
-	 <div class="scroll">
-	<div class="column box0"></div>
-	</div> 
-	<div class="info">
-			<div id="info2"></div>
-			<div id="info3"></div>
+<html>
+	<head>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.contextMenu.min.css">
+		<link rel="stylesheet" href="css/inventory.css">
+		<title>RedEM:RP Inventory 2022</title>
+	</head>
+	<body>
+
+
+		<div class='main'>
+			<div class="inventory">
+				<div class="invinfo"><div class="invtext">INVENTORY</div><div class="money" id="money">16.34$</div> <div class="clock" id="clock">16:34</div> <div class="invweight" id="weight" >15.0/24KG</div></div>
+				<div class="scroll" id="selfinv">
+					<div class="column box1"> 
+						
+					</div> 
+				</div> 
+				<br/><br/>
+				<div class="scroll" id="secondinv">
+					<div class="column box0"></div>
+				</div> 
+				<div class="info">
+					<div id="info2"></div>
+					<div id="info3"></div>
+				</div>
+			</div>
+
+
+			<div class="grid" style="display:none !important;">
+				<div class="cell slot1"></div>
+				<div class="cell slot2"></div>
+				<div class="cell slot3"></div>
+				<div class="cell slot4"></div>
+				<div class="cell slot5"></div>
+				<div class="cell slot6"></div>
+				<div class="cell slot7"></div>
+				<div class="cell slot8"></div>
+				<div class="cell slot9"></div>
+			</div>
+			<div class="invCraft" id="craftButton" style="display:none !important;">CRAFT</div>
+			<div class="invSplit" id="splitBox">
+				<span class="splitmsg">Split by amount?</span><br/>
+				<input type="number" class="splitamount" id="splitamt" name="splitamt"><br>
+				<button id="splitConf" class="splitbutton">Confirm</button>
+				<button id="splitCancel" class="splitbutton" style="float:right">Cancel</button>
+			</div>
 		</div>
-		 <div class="invCraft" id="craftButton">CRAFT</div>
-	 </div>
-
-
-	<div class="grid">
-  <div class="cell slot1"></div>
-  <div class="cell slot2"></div>
-  <div class="cell slot3"></div>
-  <div class="cell slot4"></div>
-  <div class="cell slot5"></div>
-  <div class="cell slot6"></div>
-  <div class="cell slot7"></div>
-  <div class="cell slot8"></div>
-  <div class="cell slot9"></div>
-</div>
-<script src="https://unpkg.com/web-animations-js@2.3.2/web-animations.min.js"></script>
-<script src="https://unpkg.com/muuri@0.8.0/dist/muuri.min.js"></script>
-<script src="js/inventory.js" type="text/javascript"></script>
-  </div>
-</body>
-
-<style>
-
-@font-face {
-	font-family: crock;
-	src: url(crock.ttf);
-}
-
-* {
-	font-family: crock;
-	overflow: hidden;
-}
-
-html,
-body {
-	height: 100%;
-	margin: 0 !important;
-	overflow: hidden;
-	
-}
-
-.game {
-	position: relative;
-	width: 90%;
-	height: 3%;
-	margin: 0 4%;
-}
-.invinfo {
-	position: relative;
-	width: 90%;
-	height: 4%;
-	margin: 0 5%;
-	color: white;
-	overflow-x: hidden;
-	padding-left:1.5%;
-	margin-bottom:1%;
-}
-.invCraft {
-	position: relative;
-	width: 10%;
-	height: 3;
-	margin: 1% 7%;
-	color: black;
-	overflow-x: hidden;
-	padding-left:1.5%;
-	font-size: 0.9vw;
-	background-image: url("selection_box_bg_1d.png");
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: 100% 100%;
-}
-
-
-.invtext {
-font-size: 1.1vw;
-color: white;
-float: left;
-width: 25%;
-
-}
-.invweight {
-font-size: 0.9vw;
-color: black;
-float: left;
-width: 25%;
-height:100%;
-line-height:200%;
-text-align:center;
-background-image: url("selection_box_bg_1d.png");
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: 100% 100%;
-
-}
-
-.money {
-	font-size: 1.1vw;
-	color: black;
-	float: right;
-	width: 20%;
-	text-align:center;
-	background-image: url("selection_box_bg_1d.png");
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: 100% 100%;
-	margin-left:5%;
-}
-
-.clock {
-	font-size: 1.1vw;
-	color: black;
-	float: right;
-	width: 20%;
-	text-align:center;
-	background-image: url("selection_box_bg_1d.png");
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: 100% 100%;
-	margin-left:5%;
-}
-
-.info {
-	position: relative;
-	bottom: 0;
-	width: 90%;
-	height: 6%;
-	margin: 0 4%;
-	text-align: left;
-	color: black;
-	overflow-x: hidden;
-	margin-top: 1.5%;
-	font-size: 0.8vw;
-	padding-top:1%;
-	background-image: url("selection_box_bg_1d.png");
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: 95% 100%;
-	padding-left:5%;
-
-}
-
-#info2 {
-	font-size: 1vw;
-	font-weight: 750;
-}
-
-.main {
-	position: relative;
-	left: 0;
-	right: 0;
-	top: 0;
-	bottom: 0;
-	padding: 0;
-	margin: 0;
-	width: 100vw;
-	height: 100vh;
-	background-image: linear-gradient(225deg, rgba(255, 255, 255, 0.20)40%, rgba(0, 0, 0, 0.10) 100%);
-}
-
-.inventory {
-	position: relative;
-	float: right;
-	top: 5%;
-	height: 95%;
-	width: 33%;
-}
-
-.grid {
-	position: absolute;
-	width: 15vw;
-	height: 15vw;
-	top: 50%;
-	left: 50%;
-	margin-right: -50%;
-	transform: translate(-50%, -20%);
-}
-
-.cell {
-	position: relative;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	width: 30%;
-	min-height: 30%;
-	max-height: 30%;
-	margin: 1%;
-	background-image: linear-gradient(rgba(255, 255, 255, 0.60)10%, rgba(255, 255, 255, 0.0) 100%);
-	 box-shadow: 0 0 6px rgb(255, 255, 255), 0 0 3px beige inset;
-	border-radius: 1px;
-	float: left;
-}
-
-.column {
-	position: relative;
-	margin: 0 1.5%;
-	background-image: linear-gradient(rgba(255, 255, 255, 0.60)10%, rgba(255, 255, 255, 0.0) 100%);
-	 box-shadow: 0 0 6px rgb(255, 255, 255), 0 0 3px beige inset;
-	border-radius: 1px;
-	min-height: 13%;
-}
-
-.scroll {
-	position: relative;
-	width: 90%;
-	height:30.5%;
-	margin-left: auto;
-	margin-right: auto;
-	overflow-x: hidden;
-	overflow-y: auto;
-}
-
-.column.box0 {
-	position: relative;
-	width: 100%;
-	min-height: 100%;
-	overflow-x: hidden;
-}
-
-.column.box1 {
-	position: relative;
-	width: 100%;
-	min-height: 100%;
-	overflow-x: hidden;
-}
-
-.column.box2 {
-	margin: 1.5%;
-	max-width: 43.5%;
-	width: 43.5%;
-	float: left;
-	margin-left: 5%;
-	color: white;
-	text-align: center;
-	margin-bottom:5%;
-}
-
-.column.box3 {
-	margin: 1.5%;
-	max-width: 43.5%;
-	width: 43.5%;
-	float: left;
-	color: white;
-	text-align: center;
-	margin-bottom:5%;
-}
-
-.item {
-	position: absolute;
-	width: 15.2%;
-	height: 8vh;
-	max-height: 8vh;
-	min-width: 20px;
-	margin: 5px;
-	border: 1px solid white;
-	background-color: rgba(0, 0, 0, 0.60);
-	color: #fff;
-	display: grid;
-}
-
-.item:hover {
-	background-image: url("item_bg_selected.png");
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: 100% 100%;
-	border: none;
-}
-
-.item.muuri-item-dragging {
-	z-index: 9999;
-}
-
-.item.muuri-item-releasing {
-	z-index: 9998;
-}
-
-.item.muuri-item-hidden {
-	z-index: 0;
-}
-
-.item-content {
-	position: relative;
-	width: 100%;
-	height: 100%;
-	text-align: center;
-}
-
-.item-content-main {
-	width: 100%;
-	height: 100%;
-	font-size: 20px;
-	color: black;
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: cover;
-}
-
-.item-content-footer {
-	position: absolute;
-	color: black;
-	height: 30%;
-	width: 30%;
-	text-align: center;
-	background-image: url("counter_bg_1b.png");
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: cover;
-	top: 70%;
-	left: 80%;
-	margin-right: -50%;
-	transform: translate(-50%, -20%);
-}
-
-.item-content-amount-moved {
-	background-color: rgba(0, 0, 0, 0.6);
-	color: white;
-	font-size: 25px;
-	position: absolute;
-	top: 0;
-	text-align: center;
-	height: 100px;
-	width: 100px;
-	line-height: 100px;
-}
-
-::-webkit-scrollbar {
-	width: 3px;
-	height: 3px;
-}
-
-::-webkit-scrollbar-button {
-	width: 0px;
-	height: 0px;
-}
-
-::-webkit-scrollbar-thumb {
-	background: #dfdfdf;
-	border: 0px none #ffffff;
-	border-radius: 50px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-	background: #ffffff;
-}
-
-::-webkit-scrollbar-thumb:active {
-	background: #000000;
-}
-
-::-webkit-scrollbar-track {
-	background: #666666;
-	border: 0px none #ffffff;
-	border-radius: 0px;
-}
-
-::-webkit-scrollbar-track:hover {
-	background: #666666;
-}
-
-::-webkit-scrollbar-track:active {
-	background: #333333;
-}
-
-::-webkit-scrollbar-corner {
-	background: transparent;
-}
-</style>
-
-
-
-
+	</body>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.contextMenu.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.ui.position.js"></script>
+	<script src="https://unpkg.com/web-animations-js@2.3.2/web-animations.min.js" type="text/javascript"></script>
+	<script src="https://unpkg.com/muuri@0.8.0/dist/muuri.min.js" type="text/javascript"></script>
+	<script src="js/inventory.js" type="text/javascript"></script>
+</html>
