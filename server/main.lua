@@ -1,4 +1,4 @@
-RedEM = exports["redem_roleplay"]:GetCoreObject()
+RedEM = exports["redem_roleplay"]:RedEM()
 
 local Inventory = {}
 local InventoryWeight = {}
@@ -1268,7 +1268,7 @@ RegisterServerEvent("redemrp_inventory:GetPlayer",
                 return TriggerClientEvent("redem_roleplay:NotifyLeft", _source, "Cannot search!", "Cannot search downed players.", "menu_textures", "menu_icon_alert", 3000)
             end
             if HandsUp[_target] or hogtied then
-                if not exports["redem_roleplay"]:GetCoreObject().CrimeDisabled then
+                if not exports["redem_roleplay"]:RedEM().CrimeDisabled then
                     local identifier_target = TargetPlayer.GetIdentifier()
                     local charid_target = TargetPlayer.GetActiveCharacter()
                     TriggerClientEvent("redem_roleplay:NotifyRight", _source, "Player Cash: $"..comma_value(string.format("%.2f", TargetPlayer.getMoney())), 3000)

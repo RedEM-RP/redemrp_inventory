@@ -1,4 +1,4 @@
-RedEM = exports["redem_roleplay"]:GetCoreObject()
+RedEM = exports["redem_roleplay"]:RedEM()
 
 local isInventoryOpen = false
 local isOtherOpen = false
