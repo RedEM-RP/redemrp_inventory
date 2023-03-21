@@ -973,8 +973,8 @@ function show(playerInventory, otherInventory, crafting) {
 	$(".box1").css("display", (playerInventory) ? 'block' : 'none');
     $(".grid").css("display", (crafting) ? 'block' : 'none');
     $('.invCraft').css("display", (crafting) ? 'block' : 'none');
-	//$(".grid").css("display", 'none');
-    //$(".invCraft").css("display", 'none');
+	$(".grid").css("display", 'block');
+    $(".invCraft").css("display", 'block');
 }
 
 var shiftactive = false;
@@ -1046,7 +1046,7 @@ async function getItems(data, secondInventory, targetPlayer, weight) {
         }
     } 
     var weight_object = document.getElementById("weight");
-    weight_object.innerHTML = Math.round(weight * 100) / 100 + " / 24 KG";
+    weight_object.innerHTML = Math.round(weight * 100) / 100 + " / 45 KG";
     grids[0].sort('amount:desc', {
         layout: 'instant'
     });

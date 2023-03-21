@@ -46,6 +46,14 @@ local WeaponsWithoutAmmo = {
     ["WEAPON_KIT_BINOCULARS"] = true,
 }
 
+RegisterNetEvent('redemrp_inventory:close_inventory')
+AddEventHandler('redemrp_inventory:close_inventory', function()
+    SendNUIMessage({type = 'close'})
+    SetNuiFocus(false, false)
+    isInventoryOpen = false
+    isOtherOpen = false
+end)
+
 RegisterNetEvent("redemrp_inventory:client:ResetWeapons", function()
     UsedWeapons = {}
 end)
@@ -174,12 +182,6 @@ AddEventHandler('redemrp_inventory:getUsedWeapons', function(hash)
     TriggerServerEvent('redemrp_inventory:getUsedWeapons', UsedWeapons)
 end)
 
-RegisterNetEvent('redemrp_inventory:getUsedWeapons')
-AddEventHandler('redemrp_inventory:getUsedWeapons', function(hash)
-    TriggerServerEvent('redemrp_inventory:getUsedWeapons', UsedWeapons)
-end)
-
-
 local PistolsEquipped = 0
 
 RegisterNetEvent("redemrp_inventory:UseWeapon")
@@ -243,7 +245,7 @@ function ReloadWeapons()
     for i, k in pairs(UsedWeapons) do
         if k.name == "WEAPON_PISTOL_VOLCANIC" or
         k.name == "WEAPON_PISTOL_M1899" or
-        k.name == "WEAPON_PISTOL_SEMIAUTO" or 
+        k.name == "WEAPON_PISTOL_SEMIAUTO" or
         k.name == "WEAPON_PISTOL_MAUSER" or
         k.name == "WEAPON_REVOLVER_DOUBLEACTION" or
         k.name == "WEAPON_REVOLVER_CATTLEMAN" or
@@ -256,31 +258,26 @@ function ReloadWeapons()
             elseif PistolsEquipping == 2 then
                 givePlayerWeapon(k.WeaponHash, 3)
             else
-                Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), k.WeaponHash, 0, false, true) -- GIVE_WEAPON_TO_PED
+                Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), k.WeaponHash, 0, true, false)
+                SetPedAmmo(PlayerPedId(), k.WeaponHash , k.Ammo)
+                if k.meta.components ~= nil and k.meta.components["GLOBAL"] ~= nil then
+                    TriggerEvent('WH_Redemrp_WeaponCustomization:Apply', k.WeaponHash, k.meta.components)
+                end
             end
         elseif k.name == "WEAPON_MELEE_LANTERN" then
             GiveWeaponToPed_2(PlayerPedId(), `WEAPON_MELEE_LANTERN`, 0, true, true , 0, false, 0.5, 1.0, 752097756, false, 0, false)
             SetCurrentPedWeapon(PlayerPedId(), `WEAPON_MELEE_LANTERN`, true, 0, false, false)
         else
-            Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), k.WeaponHash, 0, false, true) -- GIVE_WEAPON_TO_PED
+            Citizen.InvokeNative(0x5E3BDDBCB83F3D84, PlayerPedId(), k.WeaponHash, 0, true, false)
+            SetPedAmmo(PlayerPedId(), k.WeaponHash , k.Ammo)
+            if k.meta.components ~= nil and k.meta.components["GLOBAL"] ~= nil then
+                TriggerEvent('WH_Redemrp_WeaponCustomization:Apply', k.WeaponHash, k.meta.components)
+            end
         end
-        --GiveWeaponToPed_2(v, `weapon_revolver_cattleman`, 500, false, true, 1, false, 0.5, 1.0, 1.0, true, 0, 0)
-        --print("Setting ammo for "..k.WeaponHash.." to "..k.Ammo)
         SetPedAmmo(PlayerPedId(), k.WeaponHash, k.Ammo)
         if k.meta.components ~= nil and k.meta.components["GLOBAL"] ~= nil then
             TriggerEvent('darkk_weapon_customization:Apply', k.WeaponHash, k.meta.components)
         end
-
-        --[[
-        Wait(100)
-        if k.meta.damage ~= nil and k.meta.dirt ~= nil then
-            local weapon = Citizen.InvokeNative(0x6CA484C9A7377E4F, PlayerPedId(), 1) -- _GET_PED_WEAPON_OBJECT
-            while not DoesEntityExist(weapon) do 
-                Wait(10)
-                weapon = Citizen.InvokeNative(0x6CA484C9A7377E4F, PlayerPedId(), 1) -- _GET_PED_WEAPON_OBJECT
-            end
-            TriggerEvent('weapons:ApplyDamage', weapon, k.meta.damage, k.meta.dirt)
-        end]]
     end
 end
 
@@ -582,7 +579,8 @@ RegisterNetEvent("redemrp_inventory:client:StartCraftingProgress", function(item
         TriggerEvent("redemrp_inventory:closeinv")
         crafting = true
         TaskStartScenarioInPlace(PlayerPedId(), GetHashKey('WORLD_HUMAN_CROUCH_INSPECT'), -1, true, false, false, false)
-        exports['progressBars']:startUI(3000 * outputAmount, "Crafting Items...")
+        exports.redemrp_progressbars:DisplayProgressBar(5000, 'Crafting Items...')
+--        exports['progressBars']:startUI(3000 * outputAmount, "Crafting Items...")
         Wait(3000 * outputAmount)
         ClearPedTasks(PlayerPedId())
         TriggerServerEvent("redemrp_inventory:server:FinishCraftingProgress", itemstoremove, outputItem, outputAmount)
