@@ -512,12 +512,15 @@ AddEventHandler(
     end
 )
 
-local otodropitemdelete = 120 -- second for each item
+local otodropitemdelete = 120
 Citizen.CreateThread(function()
     while true do
         Wait(5000)
         for k, v in pairs(DroppedItems) do
             if v.time + otodropitemdelete < os.time() then
+                if DroppedItems[k] and DroppedItems[k].meta and DroppedItems[k].meta.uid then
+                    removeStash(DroppedItems[k].meta.uid)
+                end
                 DroppedItems[k] = nil
                 TriggerClientEvent('redemrp_inventory:removePickup', -1, k)
             end
@@ -943,13 +946,18 @@ function addItem(name, amount, meta, identifier, charid, lvl)
             _meta.uid = generetedUid
         end
         local item, id = getInventoryItemFromName(_name, Inventory[identifier .. "_" .. charid], getMetaOutput(meta))
+        local checkBackPackItem, id2 = getInventoryItemFromName(_name, Inventory[identifier .. "_" .. charid], {})
+        
+        if checkBackPackItem and checkBackPackItem.getName() =="backpack" then
+            print("başka bi çantaya sahipsin")
+            return false
+        end
+
         if not item then
             if itemData.type == "item_standard" then
                 if _amount > 0 then
-                    if
-                        InventoryWeight[identifier .. "_" .. charid] + (itemData.weight * _amount) <=
-                            Config.MaxWeight and itemData.limit >= _amount
-                        then
+                    if itemData.limit < _amount then _amount = itemData.limit end
+                    if  InventoryWeight[identifier .. "_" .. charid] + (itemData.weight * _amount) <= Config.MaxWeight and itemData.limit >= _amount then
                         table.insert(Inventory[identifier .. "_" .. charid], CreateItem(_name, _amount, _meta))
                         InventoryWeight[identifier .. "_" .. charid] =
                             InventoryWeight[identifier .. "_" .. charid] + (itemData.weight * _amount)
@@ -969,10 +977,8 @@ function addItem(name, amount, meta, identifier, charid, lvl)
         else
             if itemData.type == "item_standard" then
                 if _amount > 0 then
-                    if
-                        InventoryWeight[identifier .. "_" .. charid] + (itemData.weight * _amount) <=
-                            Config.MaxWeight and itemData.limit >= _amount + item.getAmount()
-                        then
+                    if itemData.limit < _amount + item.getAmount() then _amount = itemData.limit - item.getAmount() end
+                    if  InventoryWeight[identifier .. "_" .. charid] + (itemData.weight * _amount) <= Config.MaxWeight and itemData.limit >= _amount + item.getAmount() then
                         item.addAmount(_amount)
                         InventoryWeight[identifier .. "_" .. charid] =
                             InventoryWeight[identifier .. "_" .. charid] + (itemData.weight * _amount)
@@ -1134,8 +1140,8 @@ Citizen.CreateThread(function ()
     )
 end)
 
-exports('GetStashWeight', GetStashWeight)
-GetStashWeight = function(stashId)
+
+function GetStashWeight(stashId)
     local weight = 0
     if Stash[stashId] ~= nil then
         for i, j in pairs(Stash[stashId]) do
@@ -1168,6 +1174,13 @@ AddEventHandler(
         end
     end
 )
+
+function removeStash( stashid )
+    if not stashid then return false end
+    MySQL.query("DELETE FROM stashes WHERE `stashid`=@stashid;",{stashid = stashid})
+    Stash[stashid] = nil
+    return true
+end
 
 function SaveStashes()
     stashesSaved = 0
